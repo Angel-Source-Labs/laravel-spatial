@@ -81,7 +81,7 @@ class SpatialServiceProvider extends \Illuminate\Support\ServiceProvider
         ];
 
         foreach ($geometries as $type) {
-                    $dbPlatform->registerDoctrineTypeMapping($type, 'string');
+            $dbPlatform->registerDoctrineTypeMapping($type, 'string');
         }
 
     }

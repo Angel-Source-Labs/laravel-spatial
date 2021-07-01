@@ -14,7 +14,7 @@ class UpdateGeometryTable extends Migration
     public function up()
     {
         // MySQL < 5.7.5: table has to be MyISAM
-        \DB::statement('ALTER TABLE geometry ENGINE = MyISAM');
+//        \DB::statement('ALTER TABLE geometry ENGINE = MyISAM');
 
         Schema::table('geometry', function (SpatialBlueprint $table) {
             // Make sure point is not nullable

@@ -14,6 +14,11 @@ abstract class IntegrationBaseTestCase extends TestCase
     protected $after_fix = false;
     protected $migrations = [];
 
+//    public function test_rollback_migrations()
+//    {
+//        $this->assertTrue(true);
+//    }
+
     /**
      * Setup DB before each test.
      *
@@ -44,7 +49,8 @@ abstract class IntegrationBaseTestCase extends TestCase
 
     protected function defineEnvironment($app)
     {
-        $this->useMySqlConnection($app);
+//        $this->useMySqlConnection($app);
+        $this->usePostgresConnection($app);
     }
 
 //    public function tearDown(): void
@@ -60,9 +66,10 @@ abstract class IntegrationBaseTestCase extends TestCase
     private function isMySQL8AfterFix()
     {
         $results = DB::select(DB::raw('select version()'));
-        $mysql_version = $results[0]->{'version()'};
+//        $mysql_version = $results[0]->{'version()'}; // mysql
+        $postgis_version = $results[0]->{'version'}; // postgis
 
-        return version_compare($mysql_version, '8.0.4', '>=');
+        return isset($mysql_version) ? version_compare($mysql_version, '8.0.4', '>=') : true;
     }
 
     protected function assertDatabaseHas($table, array $data, $connection = null)
@@ -83,16 +90,6 @@ abstract class IntegrationBaseTestCase extends TestCase
             }
         } else {
             $this->setExpectedException($exceptionName, $exceptionMessage);
-        }
-    }
-
-    private function onMigrations(\Closure $closure, $reverse_sort = false)
-    {
-        $migrations = $this->migrations;
-        $reverse_sort ? rsort($migrations, SORT_STRING) : sort($migrations, SORT_STRING);
-
-        foreach ($migrations as $migrationClass) {
-            $closure($migrationClass);
         }
     }
 }

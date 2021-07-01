@@ -13,7 +13,7 @@ class CreateLocationTables extends Migration
      */
     public function up()
     {
-        Schema::create('geometry', function (SpatialBlueprint $table) {
+        Schema::create('geometry_brion', function (SpatialBlueprint $table) {
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_unicode_ci';
             $table->increments('id');

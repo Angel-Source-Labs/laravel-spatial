@@ -6,11 +6,6 @@ use Illuminate\Support\Facades\DB;
 
 class MigrationTest extends IntegrationBaseTestCase
 {
-//    protected $migrations = [
-//        CreateLocationTable::class,
-//        UpdateLocationTable::class,
-//    ];
-
     public function testTableWasCreatedWithRightTypes()
     {
         $result = DB::selectOne('SHOW CREATE TABLE geometry');
