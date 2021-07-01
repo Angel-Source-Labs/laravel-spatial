@@ -1,18 +1,23 @@
 <?php
 
+namespace Tests\Integration;
+
+use AngelSourceLabs\LaravelExpressions\Database\MySqlConnection;
 use AngelSourceLabs\LaravelSpatial\Types\GeometryCollection;
 use AngelSourceLabs\LaravelSpatial\Types\LineString;
 use AngelSourceLabs\LaravelSpatial\Types\MultiPoint;
 use AngelSourceLabs\LaravelSpatial\Types\MultiPolygon;
 use AngelSourceLabs\LaravelSpatial\Types\Point;
 use AngelSourceLabs\LaravelSpatial\Types\Polygon;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
+use Tests\Integration\Models\GeometryModel;
+use Tests\Integration\Models\NoSpatialFieldsModel;
+use Tests\PreparesExpressions;
 
 class SpatialTest extends IntegrationBaseTestCase
 {
-    protected $migrations = [
-        CreateLocationTable::class,
-        UpdateLocationTable::class,
-    ];
+    use PreparesExpressions;
 
     public function testSpatialFieldsNotDefinedException()
     {
@@ -142,23 +147,24 @@ class SpatialTest extends IntegrationBaseTestCase
         $loc3->save();
 
         $a = GeometryModel::distance('location', $loc1->location, 2)->get();
+//        $this->prepareExpressions($a->pluck('location'));
         $this->assertCount(2, $a);
-        $this->assertTrue($a->contains('location', $loc1->location));
-        $this->assertTrue($a->contains('location', $loc2->location));
-        $this->assertFalse($a->contains('location', $loc3->location));
+        $this->assertTrue($a->contains('location',  (string) $loc1->location));
+        $this->assertTrue($a->contains('location',  (string) $loc2->location));
+        $this->assertFalse($a->contains('location',  (string) $loc3->location));
 
         // Excluding self
         $b = GeometryModel::distanceExcludingSelf('location', $loc1->location, 2)->get();
         $this->assertCount(1, $b);
-        $this->assertFalse($b->contains('location', $loc1->location));
-        $this->assertTrue($b->contains('location', $loc2->location));
-        $this->assertFalse($b->contains('location', $loc3->location));
+        $this->assertFalse($b->contains('location', (string) $loc1->location));
+        $this->assertTrue($b->contains('location', (string) $loc2->location));
+        $this->assertFalse($b->contains('location', (string) $loc3->location));
 
         $c = GeometryModel::distance('location', $loc1->location, 1)->get();
         $this->assertCount(1, $c);
-        $this->assertTrue($c->contains('location', $loc1->location));
-        $this->assertFalse($c->contains('location', $loc2->location));
-        $this->assertFalse($c->contains('location', $loc3->location));
+        $this->assertTrue($c->contains('location', (string) $loc1->location));
+        $this->assertFalse($c->contains('location', (string) $loc2->location));
+        $this->assertFalse($c->contains('location', (string) $loc3->location));
     }
 
     public function testDistanceSphere()
@@ -177,16 +183,16 @@ class SpatialTest extends IntegrationBaseTestCase
 
         $a = GeometryModel::distanceSphere('location', $loc1->location, 200)->get();
         $this->assertCount(2, $a);
-        $this->assertTrue($a->contains('location', $loc1->location));
-        $this->assertTrue($a->contains('location', $loc2->location));
-        $this->assertFalse($a->contains('location', $loc3->location));
+        $this->assertTrue($a->contains('location', (string) $loc1->location));
+        $this->assertTrue($a->contains('location', (string) $loc2->location));
+        $this->assertFalse($a->contains('location', (string) $loc3->location));
 
         // Excluding self
         $b = GeometryModel::distanceSphereExcludingSelf('location', $loc1->location, 200)->get();
         $this->assertCount(1, $b);
-        $this->assertFalse($b->contains('location', $loc1->location));
-        $this->assertTrue($b->contains('location', $loc2->location));
-        $this->assertFalse($b->contains('location', $loc3->location));
+        $this->assertFalse($b->contains('location', (string) $loc1->location));
+        $this->assertTrue($b->contains('location', (string) $loc2->location));
+        $this->assertFalse($b->contains('location', (string) $loc3->location));
 
         if ($this->after_fix) {
             $c = GeometryModel::distanceSphere('location', $loc1->location, 44.741406484236)->get();
@@ -194,9 +200,9 @@ class SpatialTest extends IntegrationBaseTestCase
             $c = GeometryModel::distanceSphere('location', $loc1->location, 44.741406484587)->get();
         }
         $this->assertCount(1, $c);
-        $this->assertTrue($c->contains('location', $loc1->location));
-        $this->assertFalse($c->contains('location', $loc2->location));
-        $this->assertFalse($c->contains('location', $loc3->location));
+        $this->assertTrue($c->contains('location', (string) $loc1->location));
+        $this->assertFalse($c->contains('location', (string) $loc2->location));
+        $this->assertFalse($c->contains('location', (string) $loc3->location));
     }
 
     public function testDistanceValue()
@@ -261,22 +267,22 @@ class SpatialTest extends IntegrationBaseTestCase
 
         $a = GeometryModel::orderByDistance('location', $loc1->location)->get();
         $this->assertCount(3, $a);
-        $this->assertEquals($loc1->location, $a[0]->location);
-        $this->assertEquals($loc2->location, $a[1]->location);
-        $this->assertEquals($loc3->location, $a[2]->location);
+        $this->assertEquals((string) $loc1->location, $a[0]->location);
+        $this->assertEquals((string) $loc2->location, $a[1]->location);
+        $this->assertEquals((string) $loc3->location, $a[2]->location);
 
         // Excluding self
         $b = GeometryModel::orderByDistance('location', $loc1->location, 'asc')->get();
         $this->assertCount(3, $b);
-        $this->assertEquals($loc1->location, $b[0]->location);
-        $this->assertEquals($loc2->location, $b[1]->location);
-        $this->assertEquals($loc3->location, $b[2]->location);
+        $this->assertEquals((string) $loc1->location, $b[0]->location);
+        $this->assertEquals((string) $loc2->location, $b[1]->location);
+        $this->assertEquals((string) $loc3->location, $b[2]->location);
 
         $c = GeometryModel::orderByDistance('location', $loc1->location, 'desc')->get();
         $this->assertCount(3, $c);
-        $this->assertEquals($loc3->location, $c[0]->location);
-        $this->assertEquals($loc2->location, $c[1]->location);
-        $this->assertEquals($loc1->location, $c[2]->location);
+        $this->assertEquals((string) $loc3->location, $c[0]->location);
+        $this->assertEquals((string) $loc2->location, $c[1]->location);
+        $this->assertEquals((string) $loc1->location, $c[2]->location);
     }
 
     public function testOrderByDistanceSphere()
@@ -295,21 +301,21 @@ class SpatialTest extends IntegrationBaseTestCase
 
         $a = GeometryModel::orderByDistanceSphere('location', $loc1->location)->get();
         $this->assertCount(3, $a);
-        $this->assertEquals($loc1->location, $a[0]->location);
-        $this->assertEquals($loc2->location, $a[1]->location);
-        $this->assertEquals($loc3->location, $a[2]->location);
+        $this->assertEquals((string) $loc1->location, $a[0]->location);
+        $this->assertEquals((string) $loc2->location, $a[1]->location);
+        $this->assertEquals((string) $loc3->location, $a[2]->location);
 
         $b = GeometryModel::orderByDistanceSphere('location', $loc1->location, 'asc')->get();
         $this->assertCount(3, $b);
-        $this->assertEquals($loc1->location, $b[0]->location);
-        $this->assertEquals($loc2->location, $b[1]->location);
-        $this->assertEquals($loc3->location, $b[2]->location);
+        $this->assertEquals((string) $loc1->location, $b[0]->location);
+        $this->assertEquals((string) $loc2->location, $b[1]->location);
+        $this->assertEquals((string) $loc3->location, $b[2]->location);
 
         $c = GeometryModel::orderByDistanceSphere('location', $loc1->location, 'desc')->get();
         $this->assertCount(3, $c);
-        $this->assertEquals($loc3->location, $c[0]->location);
-        $this->assertEquals($loc2->location, $c[1]->location);
-        $this->assertEquals($loc1->location, $c[2]->location);
+        $this->assertEquals((string) $loc3->location, $c[0]->location);
+        $this->assertEquals((string) $loc2->location, $c[1]->location);
+        $this->assertEquals((string) $loc1->location, $c[2]->location);
     }
 
     //public function testBounding() {

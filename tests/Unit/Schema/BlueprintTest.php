@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\Schema;
 
-use AngelSourceLabs\LaravelSpatial\Schema\Blueprint;
+use AngelSourceLabs\LaravelSpatial\Schema\SpatialBlueprint;
 use Illuminate\Database\Schema\ColumnDefinition;
 use Mockery;
 use Tests\Unit\BaseTestCase;
@@ -10,7 +10,7 @@ use Tests\Unit\BaseTestCase;
 class BlueprintTest extends BaseTestCase
 {
     /**
-     * @var \AngelSourceLabs\LaravelSpatial\Schema\Blueprint
+     * @var \AngelSourceLabs\LaravelSpatial\Schema\SpatialBlueprint
      */
     protected $blueprint;
 
@@ -18,7 +18,7 @@ class BlueprintTest extends BaseTestCase
     {
         parent::setUp();
 
-        $this->blueprint = Mockery::mock(Blueprint::class)
+        $this->blueprint = Mockery::mock(SpatialBlueprint::class)
             ->makePartial()->shouldAllowMockingProtectedMethods();
     }
 

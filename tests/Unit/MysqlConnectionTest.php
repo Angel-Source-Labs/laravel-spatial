@@ -2,25 +2,18 @@
 
 namespace Tests\Unit;
 
-use AngelSourceLabs\LaravelExpressions\Database\MySqlConnection;
-use AngelSourceLabs\LaravelSpatial\Schema\Builder;
-use PHPUnit\Framework\TestCase;
-use Stubs\PDOStub;
+use AngelSourceLabs\LaravelSpatial\Schema\MySqlBuilder;
+use Illuminate\Support\Facades\DB;
+use Orchestra\Testbench\TestCase;
+use Tests\Integration\IntegrationBaseTestCase;
+use Tests\Unit\Stubs\PDOStub;
 
-class MysqlConnectionTest extends TestCase
+class MysqlConnectionTest extends IntegrationBaseTestCase
 {
-    private $mysqlConnection;
-
-    protected function setUp(): void
-    {
-        $mysqlConfig = ['driver' => 'mysql', 'prefix' => 'prefix', 'database' => 'database', 'name' => 'foo'];
-        $this->mysqlConnection = new MysqlConnection(new PDOStub(), 'database', 'prefix', $mysqlConfig);
-    }
-
     public function testGetSchemaBuilder()
     {
-        $builder = $this->mysqlConnection->getSchemaBuilder();
+        $builder = DB::connection()->getSchemaBuilder();
 
-        $this->assertInstanceOf(Builder::class, $builder);
+        $this->assertInstanceOf(MySqlBuilder::class, $builder);
     }
 }

@@ -2,6 +2,11 @@
 
 namespace AngelSourceLabs\LaravelSpatial;
 
+use AngelSourceLabs\LaravelSpatial\Schema\Grammars\MySqlGrammar;
+use AngelSourceLabs\LaravelSpatial\Schema\MySqlBuilder;
+use AngelSourceLabs\LaravelSpatial\Schema\PostgresBuilder;
+use AngelSourceLabs\LaravelSpatial\Schema\SQLiteBuilder;
+use AngelSourceLabs\LaravelSpatial\Schema\SqlServerBuilder;
 use Doctrine\DBAL\Types\Type as DoctrineType;
 use AngelSourceLabs\LaravelSpatial\Doctrine\Geometry;
 use AngelSourceLabs\LaravelSpatial\Doctrine\GeometryCollection;
@@ -25,6 +30,11 @@ class SpatialServiceProvider extends \Illuminate\Support\ServiceProvider
      */
     public function register()
     {
+        $this->app->bind(\Illuminate\Database\Schema\MySqlBuilder::class, MySqlBuilder::class);
+        $this->app->bind(\Illuminate\Database\Schema\PostgresBuilder::class, PostgresBuilder::class);
+        $this->app->bind(\Illuminate\Database\Schema\SQLiteBuilder::class, SQLiteBuilder::class);
+        $this->app->bind(\Illuminate\Database\Schema\SqlServerBuilder::class, SqlServerBuilder::class);
+
         if (class_exists(DoctrineType::class)) {
             // Prevent geometry type fields from throwing a 'type not found' error when changing them
             $geometries = [
@@ -48,45 +58,61 @@ class SpatialServiceProvider extends \Illuminate\Support\ServiceProvider
 
     public function boot()
     {
-        $this->bindGeometryTypes();
+        $this->resolveSpatialSchemaGrammar();
     }
 
-    protected function bindGeometryTypes()
+    public function registerGeometryTypes($connection)
     {
-        $connections = [
-            'mysql',
-            'pgsql',
-            'sqlite',
-            'sqlsrv',
+        $dbPlatform = $connection
+            ->getDoctrineSchemaManager()
+            ->getDatabasePlatform();
+
+        // Prevent geometry type fields from throwing a 'type not found' error when changing them
+        $geometries = [
+            'geometry',
+            'point',
+            'linestring',
+            'polygon',
+            'multipoint',
+            'multilinestring',
+            'multipolygon',
+            'geometrycollection',
+            'geomcollection',
         ];
 
-        foreach($connections as $driver) {
+        foreach ($geometries as $type) {
+                    $dbPlatform->registerDoctrineTypeMapping($type, 'string');
+        }
+
+    }
+
+    protected function resolveSpatialSchemaGrammar()
+    {
+        $connections = [
+            'mysql' => [
+                'schemaGrammar' => MySqlGrammar::class,
+            ],
+            'pgsql' => [
+                'schemaGrammar' => \Illuminate\Database\Schema\Grammars\PostgresGrammar::class,
+            ],
+            'sqlite' => [
+                'schemaGrammar' => \Illuminate\Database\Schema\Grammars\SQLiteGrammar::class,
+            ],
+            'sqlsrv' => [
+                'schemaGrammar' => \Illuminate\Database\Schema\Grammars\SqlServerGrammar::class,
+            ],
+        ];
+
+        foreach($connections as $driver => $class) {
+
             $resolver = Connection::getResolver($driver);
-            Connection::resolverFor($driver, function($pdo, $database = '', $tablePrefix = '', array $config = []) use ($driver, $resolver) {
+            Connection::resolverFor($driver, function($pdo, $database = '', $tablePrefix = '', array $config = []) use ($driver, $resolver, $class) {
                 /**
                  * @var Connection | null $connection
                  */
                 $connection = $resolver($pdo, $database, $tablePrefix, $config);
-                $dbPlatform = $connection
-                    ->getDoctrineSchemaManager()
-                    ->getDatabasePlatform();
-
-                // Prevent geometry type fields from throwing a 'type not found' error when changing them
-                $geometries = [
-                    'geometry',
-                    'point',
-                    'linestring',
-                    'polygon',
-                    'multipoint',
-                    'multilinestring',
-                    'multipolygon',
-                    'geometrycollection',
-                    'geomcollection',
-                ];
-
-                foreach ($geometries as $type) {
-                    $dbPlatform->registerDoctrineTypeMapping($type, 'string');
-                }
+                $connection->setSchemaGrammar(new $class['schemaGrammar']);
+                $this->registerGeometryTypes($connection);
 
                 return $connection;
             });

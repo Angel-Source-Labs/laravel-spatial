@@ -3,11 +3,11 @@
 namespace Tests\Unit;
 
 use AngelSourceLabs\LaravelExpressions\ExpressionsServiceProvider;
-use AngelSourceLabs\LaravelSpatial\SpatialServiceProvider;
 use Illuminate\Support\Facades\DB;
 use Mockery as m;
 use Orchestra\Testbench\TestCase;
 use Tests\Fixtures\TestPDO;
+use Tests\Fixtures\TestSpatialServiceProvider;
 
 abstract class BaseTestCase extends TestCase
 {
@@ -20,7 +20,7 @@ abstract class BaseTestCase extends TestCase
     {
         return [
             ExpressionsServiceProvider::class,
-//            SpatialServiceProvider::class
+            TestSpatialServiceProvider::class,
         ];
     }
 

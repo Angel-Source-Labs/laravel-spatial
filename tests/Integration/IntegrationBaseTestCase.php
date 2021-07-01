@@ -1,72 +1,60 @@
 <?php
 
+namespace Tests\Integration;
+
+use AngelSourceLabs\LaravelExpressions\ExpressionsServiceProvider;
 use AngelSourceLabs\LaravelSpatial\SpatialServiceProvider;
 use Illuminate\Support\Facades\DB;
-use Laravel\BrowserKitTesting\TestCase as BaseTestCase;
+use Orchestra\Testbench\TestCase;
 
-abstract class IntegrationBaseTestCase extends BaseTestCase
+abstract class IntegrationBaseTestCase extends TestCase
 {
+    use DatabaseConnections;
+
     protected $after_fix = false;
     protected $migrations = [];
-
-    /**
-     * Boots the application.
-     *
-     * @return \Illuminate\Foundation\Application
-     */
-    public function createApplication()
-    {
-        $app = require __DIR__.'/../../vendor/laravel/laravel/bootstrap/app.php';
-        $app->register(SpatialServiceProvider::class);
-
-        $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
-
-        $app['config']->set('database.default', 'mysql');
-        $app['config']->set('database.connections.mysql.host', env('DB_HOST'));
-        $app['config']->set('database.connections.mysql.port', env('DB_PORT'));
-        $app['config']->set('database.connections.mysql.database', env('DB_DATABASE'));
-        $app['config']->set('database.connections.mysql.username', env('DB_USERNAME'));
-        $app['config']->set('database.connections.mysql.password', env('DB_PASSWORD'));
-        $app['config']->set('database.connections.mysql.modes', [
-            'ONLY_FULL_GROUP_BY',
-            'STRICT_TRANS_TABLES',
-            'NO_ZERO_IN_DATE',
-            'NO_ZERO_DATE',
-            'ERROR_FOR_DIVISION_BY_ZERO',
-            'NO_ENGINE_SUBSTITUTION',
-        ]);
-
-        return $app;
-    }
 
     /**
      * Setup DB before each test.
      *
      * @return void
      */
-    public function setUp()
+    public function setUp() : void
     {
         parent::setUp();
 
         $this->after_fix = $this->isMySQL8AfterFix();
 
-        $this->onMigrations(function ($migrationClass) {
-            (new $migrationClass())->up();
-        });
+        $this->loadMigrationsFrom(__DIR__ . '/Migrations');
 
-        //\DB::listen(function($sql) {
-        //    var_dump($sql);
-        //});
+//        $this->onMigrations(function ($migrationClass) {
+//            (new $migrationClass())->up();
+//        });
+
+        // Cannot declare class , because the name is already in use
     }
 
-    public function tearDown()
+    protected function getPackageProviders($app)
     {
-        $this->onMigrations(function ($migrationClass) {
-            (new $migrationClass())->down();
-        }, true);
-
-        parent::tearDown();
+        return [
+            ExpressionsServiceProvider::class,
+            SpatialServiceProvider::class
+        ];
     }
+
+    protected function defineEnvironment($app)
+    {
+        $this->useMySqlConnection($app);
+    }
+
+//    public function tearDown(): void
+//    {
+//        $this->onMigrations(function ($migrationClass) {
+//            (new $migrationClass())->down();
+//        }, true);
+//
+//        parent::tearDown();
+//    }
 
     // MySQL 8.0.4 fixed bug #26941370 and bug #88031
     private function isMySQL8AfterFix()

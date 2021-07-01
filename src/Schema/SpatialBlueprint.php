@@ -2,9 +2,9 @@
 
 namespace AngelSourceLabs\LaravelSpatial\Schema;
 
-use Illuminate\Database\Schema\Blueprint as IlluminateBlueprint;
+use Illuminate\Database\Schema\Blueprint;
 
-class Blueprint extends IlluminateBlueprint
+class SpatialBlueprint extends Blueprint
 {
     /**
      * Add a geometry column on the table.

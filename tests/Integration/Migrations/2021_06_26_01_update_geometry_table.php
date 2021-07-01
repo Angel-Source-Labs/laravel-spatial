@@ -1,10 +1,10 @@
 <?php
 
-use AngelSourceLabs\LaravelSpatial\Schema\Blueprint;
+use AngelSourceLabs\LaravelSpatial\Schema\SpatialBlueprint;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\Schema;
 
-class UpdateLocationTable extends Migration
+class UpdateGeometryTable extends Migration
 {
     /**
      * Run the migrations.
@@ -16,7 +16,7 @@ class UpdateLocationTable extends Migration
         // MySQL < 5.7.5: table has to be MyISAM
         \DB::statement('ALTER TABLE geometry ENGINE = MyISAM');
 
-        Schema::table('geometry', function (Blueprint $table) {
+        Schema::table('geometry', function (SpatialBlueprint $table) {
             // Make sure point is not nullable
             $table->point('location')->change();
 
@@ -41,13 +41,13 @@ class UpdateLocationTable extends Migration
      */
     public function down()
     {
-        Schema::table('geometry', function (Blueprint $table) {
+        Schema::table('geometry', function (SpatialBlueprint $table) {
             $table->dropSpatialIndex(['location']); // either an array of column names or the index name
         });
 
         \DB::statement('ALTER TABLE geometry ENGINE = InnoDB');
 
-        Schema::table('geometry', function (Blueprint $table) {
+        Schema::table('geometry', function (SpatialBlueprint $table) {
             $table->point('location')->nullable()->change();
         });
     }

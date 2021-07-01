@@ -97,6 +97,8 @@ abstract class Geometry implements GeometryInterface, Jsonable, \JsonSerializabl
 
         $parsed = $parser->parse($wkb);
 
+//        $parsed->getExpression();
+
         if ($srid > 0) {
             $parsed->setSrid($srid);
         }
@@ -148,5 +150,10 @@ abstract class Geometry implements GeometryInterface, Jsonable, \JsonSerializabl
     public function getValue()
     {
         return $this->getExpression()->getValue();
+    }
+
+    public function __toString()
+    {
+        return (string) $this->getValue();
     }
 }

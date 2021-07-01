@@ -1,10 +1,10 @@
 <?php
 
-use AngelSourceLabs\LaravelSpatial\Schema\Blueprint;
+use AngelSourceLabs\LaravelSpatial\Schema\SpatialBlueprint;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\Schema;
 
-class CreateLocationTable extends Migration
+class CreateLocationTables extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateLocationTable extends Migration
      */
     public function up()
     {
-        Schema::create('geometry', function (Blueprint $table) {
+        Schema::create('geometry', function (SpatialBlueprint $table) {
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_unicode_ci';
             $table->increments('id');
@@ -28,12 +28,12 @@ class CreateLocationTable extends Migration
             $table->timestamps();
         });
 
-        Schema::create('no_spatial_fields', function (Blueprint $table) {
+        Schema::create('no_spatial_fields', function (SpatialBlueprint $table) {
             $table->increments('id');
             $table->geometry('geometry')->default(null)->nullable();
         });
 
-        Schema::create('with_srid', function (Blueprint $table) {
+        Schema::create('with_srid', function (SpatialBlueprint $table) {
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_unicode_ci';
             $table->increments('id');

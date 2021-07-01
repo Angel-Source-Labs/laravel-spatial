@@ -1,11 +1,11 @@
 <?php
 
+
 namespace AngelSourceLabs\LaravelSpatial\Schema;
 
 use Closure;
-use Illuminate\Database\Schema\MySqlBuilder;
 
-class Builder extends MySqlBuilder
+trait CreatesSpatialBlueprint
 {
     /**
      * Create a new command set with a Closure.
@@ -13,10 +13,10 @@ class Builder extends MySqlBuilder
      * @param string  $table
      * @param Closure $callback
      *
-     * @return Blueprint
+     * @return SpatialBlueprint
      */
     protected function createBlueprint($table, Closure $callback = null)
     {
-        return new Blueprint($table, $callback);
+        return new SpatialBlueprint($table, $callback);
     }
 }

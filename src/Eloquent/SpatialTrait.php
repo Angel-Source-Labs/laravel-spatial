@@ -59,6 +59,18 @@ trait SpatialTrait
         'distance_sphere',
     ];
 
+    /**
+     * Create a new Eloquent query builder for the model.
+     *
+     * @param \Illuminate\Database\Query\Builder $query
+     *
+     * @return Builder
+     */
+//    public function newEloquentBuilder($query)
+//    {
+//        return new Builder($query);
+//    }
+
     public function setRawAttributes(array $attributes, $sync = false)
     {
         $spatial_fields = $this->getSpatialFields();
@@ -147,7 +159,7 @@ trait SpatialTrait
             $geometry->getSrid(),
         ]);
 
-	return $query;
+	    return $query;
     }
 
     public function scopeDistanceSphere($query, $geometryColumn, $geometry, $distance)

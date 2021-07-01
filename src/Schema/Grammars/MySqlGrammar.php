@@ -2,7 +2,7 @@
 
 namespace AngelSourceLabs\LaravelSpatial\Schema\Grammars;
 
-use AngelSourceLabs\LaravelSpatial\Schema\Blueprint;
+use AngelSourceLabs\LaravelSpatial\Schema\SpatialBlueprint;
 use Illuminate\Database\Schema\Grammars\MySqlGrammar as IlluminateMySqlGrammar;
 use Illuminate\Support\Fluent;
 
@@ -117,12 +117,12 @@ class MySqlGrammar extends IlluminateMySqlGrammar
     /**
      * Compile a spatial index key command.
      *
-     * @param Blueprint $blueprint
+     * @param SpatialBlueprint $blueprint
      * @param Fluent    $command
      *
      * @return string
      */
-    public function compileSpatial(Blueprint $blueprint, Fluent $command)
+    public function compileSpatial(SpatialBlueprint $blueprint, Fluent $command)
     {
         return $this->compileKey($blueprint, $command, 'spatial');
     }

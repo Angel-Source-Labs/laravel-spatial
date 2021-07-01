@@ -1,18 +1,22 @@
 <?php
 
+namespace Tests\Integration;
+
 use AngelSourceLabs\LaravelSpatial\Types\GeometryCollection;
 use AngelSourceLabs\LaravelSpatial\Types\LineString;
 use AngelSourceLabs\LaravelSpatial\Types\MultiPoint;
 use AngelSourceLabs\LaravelSpatial\Types\MultiPolygon;
 use AngelSourceLabs\LaravelSpatial\Types\Point;
 use AngelSourceLabs\LaravelSpatial\Types\Polygon;
+use Illuminate\Database\QueryException;
+use Tests\Integration\Models\WithSridModel;
 
 class SridSpatialTest extends IntegrationBaseTestCase
 {
-    protected $migrations = [
-        CreateLocationTable::class,
-        UpdateLocationTable::class,
-    ];
+//    protected $migrations = [
+//        CreateLocationTable::class,
+//        UpdateLocationTable::class,
+//    ];
 
     public function testInsertPointWithSrid()
     {
@@ -108,7 +112,7 @@ class SridSpatialTest extends IntegrationBaseTestCase
         $geo->location = new Point(1, 2);
 
         $this->assertException(
-            Illuminate\Database\QueryException::class,
+            QueryException::class,
             'SQLSTATE[HY000]: General error: 3643 The SRID of the geometry '.
             'does not match the SRID of the column \'location\'. The SRID '.
             'of the geometry is 0, but the SRID of the column is 3857. '.
