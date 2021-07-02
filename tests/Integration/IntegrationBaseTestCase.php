@@ -47,11 +47,11 @@ abstract class IntegrationBaseTestCase extends TestCase
         ];
     }
 
-    protected function defineEnvironment($app)
-    {
-//        $this->useMySqlConnection($app);
-        $this->usePostgresConnection($app);
-    }
+//    protected function defineEnvironment($app)
+//    {
+////        $this->useMySqlConnection($app);
+//        $this->usePostgresConnection($app);
+//    }
 
 //    public function tearDown(): void
 //    {
@@ -66,10 +66,14 @@ abstract class IntegrationBaseTestCase extends TestCase
     private function isMySQL8AfterFix()
     {
         $results = DB::select(DB::raw('select version()'));
-//        $mysql_version = $results[0]->{'version()'}; // mysql
-        $postgis_version = $results[0]->{'version'}; // postgis
-
-        return isset($mysql_version) ? version_compare($mysql_version, '8.0.4', '>=') : true;
+        if ($this->dbDriver == "mysql") {
+            $mysql_version = $results[0]->{'version()'}; // mysql
+            return version_compare($mysql_version, '8.0.4', '>=');
+        }
+        elseif ($this->dbDriver == "pgsql") {
+            $postgis_version = $results[0]->{'version'}; // postgis
+            return true;
+        }
     }
 
     protected function assertDatabaseHas($table, array $data, $connection = null)

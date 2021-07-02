@@ -70,6 +70,7 @@ class SpatialServiceProvider extends \Illuminate\Support\ServiceProvider
         // Prevent geometry type fields from throwing a 'type not found' error when changing them
         $geometries = [
             'geometry',
+            'geography',
             'point',
             'linestring',
             'polygon',

@@ -4,8 +4,11 @@ namespace Tests\Integration;
 
 trait DatabaseConnections
 {
+    public $dbDriver;
+
     public function useMySqlConnection($app)
     {
+        $this->dbDriver = 'mysql';
         config(['database.default' => 'mysql']);
         $app['config']->set('database.connections.mysql.host', env('DB_HOST', '127.0.0.1'));
         $app['config']->set('database.connections.mysql.port', env('DB_PORT', '33068'));
@@ -24,6 +27,7 @@ trait DatabaseConnections
 
     public function usePostgresConnection($app)
     {
+        $this->dbDriver = 'pgsql';
         config(['database.default' => 'pgsql']);
         $app['config']->set('database.connections.pgsql.host', env('DB_HOST', '127.0.0.1'));
         $app['config']->set('database.connections.pgsql.port', env('DB_PORT', '54322'));
@@ -34,6 +38,7 @@ trait DatabaseConnections
 
     protected function useSQLiteConnection($app)
     {
+        $this->dbDriver = 'sqlite';
         config(['database.default' => 'testbench']);
         config(['database.connections.testbench' => [
             'driver'   => 'sqlite',
