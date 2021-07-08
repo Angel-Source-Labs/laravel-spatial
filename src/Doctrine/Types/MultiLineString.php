@@ -1,21 +1,21 @@
 <?php
 
-namespace AngelSourceLabs\LaravelSpatial\Doctrine;
+namespace AngelSourceLabs\LaravelSpatial\Doctrine\Types;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
 
-class MultiPoint extends Type
+class MultiLineString extends Type
 {
-    const MULTIPOINT = 'multipoint';
+    const MULTILINESTRING = 'multilinestring';
 
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {
-        return 'multipoint';
+        return 'multilinestring';
     }
 
     public function getName()
     {
-        return self::MULTIPOINT;
+        return self::MULTILINESTRING;
     }
 }

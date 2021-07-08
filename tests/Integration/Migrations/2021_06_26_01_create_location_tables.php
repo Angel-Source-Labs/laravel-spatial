@@ -55,7 +55,7 @@ class CreateLocationTables extends Migration
      */
     public function down()
     {
-        Schema::drop('geometry');
+        Schema::drop('geometry_test');
         Schema::drop('no_spatial_fields');
         Schema::drop('with_srid');
     }

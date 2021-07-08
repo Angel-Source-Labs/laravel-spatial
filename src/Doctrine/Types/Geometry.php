@@ -1,21 +1,21 @@
 <?php
 
-namespace AngelSourceLabs\LaravelSpatial\Doctrine;
+namespace AngelSourceLabs\LaravelSpatial\Doctrine\Types;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
 
-class MultiPolygon extends Type
+class Geometry extends Type
 {
-    const MULTIPOLYGON = 'multipolygon';
+    const GEOMETRY = 'geometry';
 
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {
-        return 'multipolygon';
+        return 'geometry';
     }
 
     public function getName()
     {
-        return self::MULTIPOLYGON;
+        return self::GEOMETRY;
     }
 }

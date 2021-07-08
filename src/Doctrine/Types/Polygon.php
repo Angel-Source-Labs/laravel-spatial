@@ -1,21 +1,21 @@
 <?php
 
-namespace AngelSourceLabs\LaravelSpatial\Doctrine;
+namespace AngelSourceLabs\LaravelSpatial\Doctrine\Types;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
 
-class LineString extends Type
+class Polygon extends Type
 {
-    const LINESTRING = 'linestring';
+    const POLYGON = 'polygon';
 
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {
-        return 'linestring';
+        return 'polygon';
     }
 
     public function getName()
     {
-        return self::LINESTRING;
+        return self::POLYGON;
     }
 }

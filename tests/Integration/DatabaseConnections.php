@@ -10,6 +10,7 @@ trait DatabaseConnections
     {
         $this->dbDriver = 'mysql';
         config(['database.default' => 'mysql']);
+        config(['database.connections.mysql.myisam' => false]);
         $app['config']->set('database.connections.mysql.host', env('DB_HOST', '127.0.0.1'));
         $app['config']->set('database.connections.mysql.port', env('DB_PORT', '33068'));
         $app['config']->set('database.connections.mysql.database', env('DB_DATABASE', 'spatial_test'));

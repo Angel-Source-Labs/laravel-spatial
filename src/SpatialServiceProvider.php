@@ -2,20 +2,21 @@
 
 namespace AngelSourceLabs\LaravelSpatial;
 
+use AngelSourceLabs\LaravelSpatial\Doctrine\Event\Listeners\PostgisSchemaColumnDefinitionEventSubscriber;
 use AngelSourceLabs\LaravelSpatial\Schema\Grammars\MySqlGrammar;
 use AngelSourceLabs\LaravelSpatial\Schema\MySqlBuilder;
 use AngelSourceLabs\LaravelSpatial\Schema\PostgresBuilder;
 use AngelSourceLabs\LaravelSpatial\Schema\SQLiteBuilder;
 use AngelSourceLabs\LaravelSpatial\Schema\SqlServerBuilder;
 use Doctrine\DBAL\Types\Type as DoctrineType;
-use AngelSourceLabs\LaravelSpatial\Doctrine\Geometry;
-use AngelSourceLabs\LaravelSpatial\Doctrine\GeometryCollection;
-use AngelSourceLabs\LaravelSpatial\Doctrine\LineString;
-use AngelSourceLabs\LaravelSpatial\Doctrine\MultiLineString;
-use AngelSourceLabs\LaravelSpatial\Doctrine\MultiPoint;
-use AngelSourceLabs\LaravelSpatial\Doctrine\MultiPolygon;
-use AngelSourceLabs\LaravelSpatial\Doctrine\Point;
-use AngelSourceLabs\LaravelSpatial\Doctrine\Polygon;
+use AngelSourceLabs\LaravelSpatial\Doctrine\Types\Geometry;
+use AngelSourceLabs\LaravelSpatial\Doctrine\Types\GeometryCollection;
+use AngelSourceLabs\LaravelSpatial\Doctrine\Types\LineString;
+use AngelSourceLabs\LaravelSpatial\Doctrine\Types\MultiLineString;
+use AngelSourceLabs\LaravelSpatial\Doctrine\Types\MultiPoint;
+use AngelSourceLabs\LaravelSpatial\Doctrine\Types\MultiPolygon;
+use AngelSourceLabs\LaravelSpatial\Doctrine\Types\Point;
+use AngelSourceLabs\LaravelSpatial\Doctrine\Types\Polygon;
 use Illuminate\Database\Connection;
 
 /**
@@ -61,6 +62,9 @@ class SpatialServiceProvider extends \Illuminate\Support\ServiceProvider
         $this->resolveSpatialSchemaGrammar();
     }
 
+    /**
+     * @param Connection $connection
+     */
     public function registerGeometryTypes($connection)
     {
         $dbPlatform = $connection
@@ -85,6 +89,8 @@ class SpatialServiceProvider extends \Illuminate\Support\ServiceProvider
             $dbPlatform->registerDoctrineTypeMapping($type, 'string');
         }
 
+        $dbPlatform->getEventManager()->addEventSubscriber(new PostgisSchemaColumnDefinitionEventSubscriber);
+
     }
 
     protected function resolveSpatialSchemaGrammar()
@@ -95,6 +101,7 @@ class SpatialServiceProvider extends \Illuminate\Support\ServiceProvider
             ],
             'pgsql' => [
                 'schemaGrammar' => \Illuminate\Database\Schema\Grammars\PostgresGrammar::class,
+                'schemaColumnDefinition' => PostgisSchemaColumnDefinitionEventSubscriber::class,
             ],
             'sqlite' => [
                 'schemaGrammar' => \Illuminate\Database\Schema\Grammars\SQLiteGrammar::class,

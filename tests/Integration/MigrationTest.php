@@ -4,6 +4,14 @@ namespace Tests\Integration;
 
 use AngelSourceLabs\LaravelExpressions\Database\MySqlConnection;
 use AngelSourceLabs\LaravelExpressions\Database\PostgresConnection;
+use AngelSourceLabs\LaravelSpatial\Doctrine\Types\Geometry;
+use AngelSourceLabs\LaravelSpatial\Doctrine\Types\GeometryCollection;
+use AngelSourceLabs\LaravelSpatial\Doctrine\Types\LineString;
+use AngelSourceLabs\LaravelSpatial\Doctrine\Types\MultiLineString;
+use AngelSourceLabs\LaravelSpatial\Doctrine\Types\MultiPoint;
+use AngelSourceLabs\LaravelSpatial\Doctrine\Types\MultiPolygon;
+use AngelSourceLabs\LaravelSpatial\Doctrine\Types\Point;
+use AngelSourceLabs\LaravelSpatial\Doctrine\Types\Polygon;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\Table;
@@ -34,13 +42,16 @@ class MigrationTest extends IntegrationBaseTestCase
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  SPATIAL KEY `geometry_location_spatial` (`location`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci';
+  SPATIAL KEY `geometry_test_location_spatialindex` (`location`)
+) ENGINE=' . ( config('database.connections.mysql.myisam') ? 'MyISAM' : 'InnoDB' ) . ' DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci';
 
         $this->assertEquals('geometry_test', $result->Table);
         $this->assertEquals($expected, $result->{'Create Table'});
     }
 
+    /**
+     * @environment-setup usePostgresConnection
+     */
     public function test_postgis_TableWasCreatedWithRightTypes()
     {
         /*
@@ -53,11 +64,11 @@ class MigrationTest extends IntegrationBaseTestCase
         $table = 'geometry_test';
 
 //        $result = DB::selectOne('SHOW CREATE TABLE geometry');
-//        $result = DB::select(
-//        'select
-//            column_name, data_type, character_maximum_length, column_default, is_nullable
-//        from
-//             INFORMATION_SCHEMA.COLUMNS where table_name = \'' . $table . '\';');
+        $result = DB::select(
+        'select
+            column_name, data_type, character_maximum_length, column_default, is_nullable
+        from
+             INFORMATION_SCHEMA.COLUMNS where table_name = \'' . $table . '\';');
 
 //        $columns1 = DB::getSchemaBuilder()->getColumnListing( $table );
 //        $columnTypes1 = collect($columns1)->map(function($column) use ($table) {
@@ -83,14 +94,14 @@ class MigrationTest extends IntegrationBaseTestCase
                 "default" => null,
             ],
             "geo" => [
-                "type" => StringType::class,
+                "type" => Geometry::class,
                 "unsigned" => false,
                 "notnull" => false,
                 "autoincrement" => false,
                 "default" => null,
             ],
             "location" => [
-                "type" => StringType::class,
+                "type" => Point::class,
                 "unsigned" => false,
                 "notnull" => true,
                 "autoincrement" => false,
@@ -118,6 +129,17 @@ class MigrationTest extends IntegrationBaseTestCase
             "created_at" => $expectedColumnPrototypes["created_at"],
             "updated_at" => $expectedColumnPrototypes["created_at"]
         ];
+
+        foreach ([
+            'line' => LineString::class,
+            'shape' => Polygon::class,
+            'multi_locations' => MultiPoint::class,
+            'multi_lines' => MultiLineString::class,
+            'multi_shapes' => MultiPolygon::class,
+            'multi_geometries' => GeometryCollection::class,
+                 ] as $key => $type) {
+            $expectedColumns[$key]['type'] = $type;
+        }
 
         if ($this->dbDriver == "mysql") $expectedColumns["id"]["unsigned"] = true;
         if ($this->dbDriver == "pgsql") $expectedColumns["id"]["unsigned"] = false;

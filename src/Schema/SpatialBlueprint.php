@@ -110,28 +110,28 @@ class SpatialBlueprint extends Blueprint
         return $this->addColumn('geometrycollection', $column, compact('srid'));
     }
 
-    /**
-     * Specify a spatial index for the table.
-     *
-     * @param string|array $columns
-     * @param string       $name
-     *
-     * @return \Illuminate\Support\Fluent
-     */
-    public function spatialIndex($columns, $name = null)
-    {
-        return $this->indexCommand('spatial', $columns, $name);
-    }
-
-    /**
-     * Indicate that the given index should be dropped.
-     *
-     * @param string|array $index
-     *
-     * @return \Illuminate\Support\Fluent
-     */
-    public function dropSpatialIndex($index)
-    {
-        return $this->dropIndexCommand('dropIndex', 'spatial', $index);
-    }
+//    /**
+//     * Specify a spatial index for the table.
+//     *
+//     * @param string|array $columns
+//     * @param string       $name
+//     *
+//     * @return \Illuminate\Support\Fluent
+//     */
+//    public function spatialIndex($columns, $name = null)
+//    {
+//        return $this->indexCommand('spatial', $columns, $name);
+//    }
+//
+//    /**
+//     * Indicate that the given index should be dropped.
+//     *
+//     * @param string|array $index
+//     *
+//     * @return \Illuminate\Support\Fluent
+//     */
+//    public function dropSpatialIndex($index)
+//    {
+//        return $this->dropIndexCommand('dropIndex', 'spatial', $index);
+//    }
 }
