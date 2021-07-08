@@ -81,7 +81,6 @@ class MigrationTest extends IntegrationBaseTestCase
                 "notnull" => false,
                 "autoincrement" => false,
                 "default" => null,
-                "srid" => $srid
             ]
         ];
 
