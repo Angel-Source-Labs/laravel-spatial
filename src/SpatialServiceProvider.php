@@ -4,6 +4,7 @@ namespace AngelSourceLabs\LaravelSpatial;
 
 use AngelSourceLabs\LaravelSpatial\Doctrine\Event\Listeners\PostgisSchemaColumnDefinitionEventSubscriber;
 use AngelSourceLabs\LaravelSpatial\Schema\Grammars\MySqlGrammar;
+use AngelSourceLabs\LaravelSpatial\Schema\Grammars\PostgisGrammar;
 use AngelSourceLabs\LaravelSpatial\Schema\MySqlBuilder;
 use AngelSourceLabs\LaravelSpatial\Schema\PostgresBuilder;
 use AngelSourceLabs\LaravelSpatial\Schema\SQLiteBuilder;
@@ -18,6 +19,7 @@ use AngelSourceLabs\LaravelSpatial\Doctrine\Types\MultiPolygon;
 use AngelSourceLabs\LaravelSpatial\Doctrine\Types\Point;
 use AngelSourceLabs\LaravelSpatial\Doctrine\Types\Polygon;
 use Illuminate\Database\Connection;
+use Illuminate\Database\Schema\Grammars\PostgresGrammar;
 
 /**
  * Class DatabaseServiceProvider.
@@ -100,7 +102,7 @@ class SpatialServiceProvider extends \Illuminate\Support\ServiceProvider
                 'schemaGrammar' => MySqlGrammar::class,
             ],
             'pgsql' => [
-                'schemaGrammar' => \Illuminate\Database\Schema\Grammars\PostgresGrammar::class,
+                'schemaGrammar' => PostgresGrammar::class,
                 'schemaColumnDefinition' => PostgisSchemaColumnDefinitionEventSubscriber::class,
             ],
             'sqlite' => [

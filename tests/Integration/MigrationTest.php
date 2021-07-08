@@ -43,48 +43,14 @@ class MigrationTest extends IntegrationBaseTestCase
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   SPATIAL KEY `geometry_test_location_spatialindex` (`location`)
-) ENGINE=' . ( config('database.connections.mysql.myisam') ? 'MyISAM' : 'InnoDB' ) . ' DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci';
+) ENGINE=' . (config('database.connections.mysql.myisam') ? 'MyISAM' : 'InnoDB') . ' DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci';
 
         $this->assertEquals('geometry_test', $result->Table);
         $this->assertEquals($expected, $result->{'Create Table'});
     }
 
-    /**
-     * @environment-setup usePostgresConnection
-     */
-    public function test_postgis_TableWasCreatedWithRightTypes()
+    protected function getExpectedColumns($srid = 4326)
     {
-        /*
-         * TODO: types appear to be registered properly now.
-         *  - finish migration test using dbal.
-         *  - see if we can run the new migration test against mysql
-         */
-
-
-        $table = 'geometry_test';
-
-//        $result = DB::selectOne('SHOW CREATE TABLE geometry');
-        $result = DB::select(
-        'select
-            column_name, data_type, character_maximum_length, column_default, is_nullable
-        from
-             INFORMATION_SCHEMA.COLUMNS where table_name = \'' . $table . '\';');
-
-//        $columns1 = DB::getSchemaBuilder()->getColumnListing( $table );
-//        $columnTypes1 = collect($columns1)->map(function($column) use ($table) {
-//            return [$column => DB::getSchemaBuilder()->getColumnType($table, $column)];
-//        });
-
-        /**
-         * @var MySqlConnection | PostgresConnection $connection
-         */
-        $connection = DB::connection();
-
-        /**
-         * @var Column $details
-         */
-        $actualColumns = $connection->getDoctrineSchemaManager()->listTableColumns($table);
-
         $expectedColumnPrototypes = [
             "id" => [
                 "type" => IntegerType::class,
@@ -99,6 +65,7 @@ class MigrationTest extends IntegrationBaseTestCase
                 "notnull" => false,
                 "autoincrement" => false,
                 "default" => null,
+                "srid" => $srid
             ],
             "location" => [
                 "type" => Point::class,
@@ -106,6 +73,7 @@ class MigrationTest extends IntegrationBaseTestCase
                 "notnull" => true,
                 "autoincrement" => false,
                 "default" => false,
+                "srid" => $srid
             ],
             "created_at" => [
                 "type" => DateTimeType::class,
@@ -113,6 +81,7 @@ class MigrationTest extends IntegrationBaseTestCase
                 "notnull" => false,
                 "autoincrement" => false,
                 "default" => null,
+                "srid" => $srid
             ]
         ];
 
@@ -131,12 +100,12 @@ class MigrationTest extends IntegrationBaseTestCase
         ];
 
         foreach ([
-            'line' => LineString::class,
-            'shape' => Polygon::class,
-            'multi_locations' => MultiPoint::class,
-            'multi_lines' => MultiLineString::class,
-            'multi_shapes' => MultiPolygon::class,
-            'multi_geometries' => GeometryCollection::class,
+                     'line' => LineString::class,
+                     'shape' => Polygon::class,
+                     'multi_locations' => MultiPoint::class,
+                     'multi_lines' => MultiLineString::class,
+                     'multi_shapes' => MultiPolygon::class,
+                     'multi_geometries' => GeometryCollection::class,
                  ] as $key => $type) {
             $expectedColumns[$key]['type'] = $type;
         }
@@ -144,8 +113,25 @@ class MigrationTest extends IntegrationBaseTestCase
         if ($this->dbDriver == "mysql") $expectedColumns["id"]["unsigned"] = true;
         if ($this->dbDriver == "pgsql") $expectedColumns["id"]["unsigned"] = false;
 
+        return $expectedColumns;
+    }
+
+    protected function assertPostgisTable($table, $expectedColumns = null)
+    {
+        /**
+         * @var MySqlConnection | PostgresConnection $connection
+         */
+        $connection = DB::connection();
+
+        /**
+         * @var Column $details
+         */
+        $actualColumns = $connection->getDoctrineSchemaManager()->listTableColumns($table);
+
+        $expectedColumns = $expectedColumns ?? $this->getExpectedColumns();
+
         foreach ($expectedColumns as $columnName => $columnProprety) {
-            $this->assertArrayHasKey($columnName, $actualColumns, $columnName . " is not in table" . $table);
+            $this->assertArrayHasKey($columnName, $actualColumns, $columnName . " is not in table " . $table);
             $actualColumn = $actualColumns[$columnName]->toArray();
             foreach ($columnProprety as $propName => $propValue) {
                 $actualValue = $actualColumn[$propName];
@@ -155,7 +141,18 @@ class MigrationTest extends IntegrationBaseTestCase
         }
     }
 
-    public function testTableWasCreatedWithSrid()
+    /**
+     * @environment-setup usePostgresConnection
+     */
+    public function test_postgis_TableWasCreatedWithRightTypes()
+    {
+        $this->assertPostgisTable('geometry_test');
+    }
+
+    /**
+     * @environment-setup useMySqlConnection
+     */
+    public function test_mysql_TableWasCreatedWithSrid()
     {
         $table = 'with_srid';
 
@@ -174,18 +171,37 @@ class MigrationTest extends IntegrationBaseTestCase
 
         $expected = 'CREATE TABLE `with_srid` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `geo` geometry /*!80003 SRID 3857 */ DEFAULT NULL,
-  `location` point /*!80003 SRID 3857 */ DEFAULT NULL,
-  `line` linestring /*!80003 SRID 3857 */ DEFAULT NULL,
-  `shape` polygon /*!80003 SRID 3857 */ DEFAULT NULL,
-  `multi_locations` multipoint /*!80003 SRID 3857 */ DEFAULT NULL,
-  `multi_lines` multilinestring /*!80003 SRID 3857 */ DEFAULT NULL,
-  `multi_shapes` multipolygon /*!80003 SRID 3857 */ DEFAULT NULL,
-  `multi_geometries` geomcollection /*!80003 SRID 3857 */ DEFAULT NULL,
+  `geo` geometry /*!80003 SRID 4322 */ DEFAULT NULL,
+  `location` point /*!80003 SRID 4322 */ DEFAULT NULL,
+  `line` linestring /*!80003 SRID 4322 */ DEFAULT NULL,
+  `shape` polygon /*!80003 SRID 4322 */ DEFAULT NULL,
+  `multi_locations` multipoint /*!80003 SRID 4322 */ DEFAULT NULL,
+  `multi_lines` multilinestring /*!80003 SRID 4322 */ DEFAULT NULL,
+  `multi_shapes` multipolygon /*!80003 SRID 4322 */ DEFAULT NULL,
+  `multi_geometries` geomcollection /*!80003 SRID 4322 */ DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci';
 
         $this->assertEquals('with_srid', $result->Table);
         $this->assertEquals($expected, $result->{'Create Table'});
+    }
+
+    /**
+     * @environment-setup usePostgresConnection
+     */
+    public function test_postgis_TableWasCreatedWithSrid()
+    {
+        $expectedColumns = array_merge($this->getExpectedColumns(4322), [
+            "location" => [
+                "notnull" => false,
+                "default" => null,
+            ]
+        ]);
+        unset($expectedColumns['created_at']);
+        unset($expectedColumns['updated_at']);
+
+        $this->assertPostgisTable('with_srid', $expectedColumns);
+
+        $dog = 1;
     }
 }

@@ -16,7 +16,8 @@ class SpatialBlueprint extends Blueprint
      */
     public function geometry($column, $srid = null)
     {
-        return $this->addColumn('geometry', $column, compact('srid'));
+        $projection = $srid;
+        return $this->addColumn('geometry', $column, compact('srid', 'projection'));
     }
 
     /**
@@ -29,7 +30,8 @@ class SpatialBlueprint extends Blueprint
      */
     public function point($column, $srid = null)
     {
-        return $this->addColumn('point', $column, compact('srid'));
+        $projection = $srid;
+        return $this->addColumn('point', $column, compact('srid', 'projection'));
     }
 
     /**
@@ -42,7 +44,8 @@ class SpatialBlueprint extends Blueprint
      */
     public function lineString($column, $srid = null)
     {
-        return $this->addColumn('linestring', $column, compact('srid'));
+        $projection = $srid;
+        return $this->addColumn('linestring', $column, compact('srid', 'projection'));
     }
 
     /**
@@ -55,7 +58,8 @@ class SpatialBlueprint extends Blueprint
      */
     public function polygon($column, $srid = null)
     {
-        return $this->addColumn('polygon', $column, compact('srid'));
+        $projection = $srid;
+        return $this->addColumn('polygon', $column, compact('srid', 'projection'));
     }
 
     /**
@@ -68,7 +72,8 @@ class SpatialBlueprint extends Blueprint
      */
     public function multiPoint($column, $srid = null)
     {
-        return $this->addColumn('multipoint', $column, compact('srid'));
+        $projection = $srid;
+        return $this->addColumn('multipoint', $column, compact('srid', 'projection'));
     }
 
     /**
@@ -81,7 +86,8 @@ class SpatialBlueprint extends Blueprint
      */
     public function multiLineString($column, $srid = null)
     {
-        return $this->addColumn('multilinestring', $column, compact('srid'));
+        $projection = $srid;
+        return $this->addColumn('multilinestring', $column, compact('srid', 'projection'));
     }
 
     /**
@@ -94,7 +100,8 @@ class SpatialBlueprint extends Blueprint
      */
     public function multiPolygon($column, $srid = null)
     {
-        return $this->addColumn('multipolygon', $column, compact('srid'));
+        $projection = $srid;
+        return $this->addColumn('multipolygon', $column, compact('srid', 'projection'));
     }
 
     /**
@@ -107,7 +114,8 @@ class SpatialBlueprint extends Blueprint
      */
     public function geometryCollection($column, $srid = null)
     {
-        return $this->addColumn('geometrycollection', $column, compact('srid'));
+        $projection = $srid;
+        return $this->addColumn('geometrycollection', $column, compact('srid', 'projection'));
     }
 
 //    /**

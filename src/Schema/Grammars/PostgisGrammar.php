@@ -1,9 +1,11 @@
-<?php namespace MStaack\LaravelPostgis\Schema\Grammars;
+<?php
 
+namespace AngelSourceLabs\LaravelSpatial\Schema\Grammars;
+
+use AngelSourceLabs\LaravelSpatial\Exceptions\UnsupportedGeomtypeException;
+use AngelSourceLabs\LaravelSpatial\Schema\SpatialBlueprint;
+use Illuminate\Database\Schema\Grammars\PostgresGrammar;
 use Illuminate\Support\Fluent;
-use MStaack\LaravelPostgis\Schema\Blueprint;
-use MStaack\LaravelPostgis\Exceptions\UnsupportedGeomtypeException;
-use Bosnadev\Database\Schema\Grammars\PostgresGrammar;
 
 class PostgisGrammar extends PostgresGrammar
 {
@@ -166,11 +168,11 @@ class PostgisGrammar extends PostgresGrammar
     /**
      * Adds a statement to add a geometry column
      *
-     * @param Blueprint $blueprint
+     * @param SpatialBlueprint $blueprint
      * @param Fluent $command
      * @return string
      */
-    protected function compileGeometry(Blueprint $blueprint, Fluent $command)
+    protected function compileGeometry(SpatialBlueprint $blueprint, Fluent $command)
     {
 
         $dimensions = $command->dimensions ?: 2;
@@ -211,8 +213,8 @@ class PostgisGrammar extends PostgresGrammar
      */
     private function createTypeDefinition(Fluent $column, $geometryType)
     {
-        $schema = function_exists('config') ? config('postgis.schema') : 'public';
-        $type = strtoupper($column->geomtype);
+        $schema = (function_exists('config') ? config('postgis.schema') : 'public') ?? 'public';
+        $type = strtoupper($column->type);
         if ($this->isValid($column)) {
             if ($type == 'GEOGRAPHY' && $column->srid != 4326) {
                 throw new UnsupportedGeomtypeException('Error with validation of srid! SRID of GEOGRAPHY must be 4326)');

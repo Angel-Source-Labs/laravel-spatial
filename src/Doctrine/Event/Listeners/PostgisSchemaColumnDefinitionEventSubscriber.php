@@ -33,10 +33,12 @@ class PostgisSchemaColumnDefinitionEventSubscriber implements EventSubscriber
                 : null,
         ];
 
+        $srid = (int) $matches[2][0];
+
         $column = new Column($tableColumn['field'], Type::getType($type), $options);
+        $column->setCustomSchemaOption('srid', $srid);
         $args->setColumn($column);
         $args->preventDefault();
-        $srid = $matches[2][0];
     }
 
     /**
