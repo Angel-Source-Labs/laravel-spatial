@@ -17,7 +17,7 @@ class GeometryModel extends Model
 {
     use SpatialTrait;
 
-    protected $table = 'geometry';
+    protected $table = 'geometry_test';
 
     protected $spatialFields = ['location', 'line', 'multi_geometries'];
 }

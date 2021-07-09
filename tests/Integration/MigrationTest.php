@@ -49,7 +49,7 @@ class MigrationTest extends IntegrationBaseTestCase
         $this->assertEquals($expected, $result->{'Create Table'});
     }
 
-    protected function getExpectedColumns($srid = 4326)
+    protected function getExpectedColumns($srid = null)
     {
         $expectedColumnPrototypes = [
             "id" => [
@@ -83,6 +83,11 @@ class MigrationTest extends IntegrationBaseTestCase
                 "default" => null,
             ]
         ];
+
+        if ($srid == null) {
+            unset($expectedColumnPrototypes['geo']['srid']);
+            unset($expectedColumnPrototypes['location']['srid']);
+        }
 
         $expectedColumns = [
             "id" => $expectedColumnPrototypes["id"],
@@ -170,14 +175,14 @@ class MigrationTest extends IntegrationBaseTestCase
 
         $expected = 'CREATE TABLE `with_srid` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `geo` geometry /*!80003 SRID 4322 */ DEFAULT NULL,
-  `location` point /*!80003 SRID 4322 */ DEFAULT NULL,
-  `line` linestring /*!80003 SRID 4322 */ DEFAULT NULL,
-  `shape` polygon /*!80003 SRID 4322 */ DEFAULT NULL,
-  `multi_locations` multipoint /*!80003 SRID 4322 */ DEFAULT NULL,
-  `multi_lines` multilinestring /*!80003 SRID 4322 */ DEFAULT NULL,
-  `multi_shapes` multipolygon /*!80003 SRID 4322 */ DEFAULT NULL,
-  `multi_geometries` geomcollection /*!80003 SRID 4322 */ DEFAULT NULL,
+  `geo` geometry /*!80003 SRID 3857 */ DEFAULT NULL,
+  `location` point /*!80003 SRID 3857 */ DEFAULT NULL,
+  `line` linestring /*!80003 SRID 3857 */ DEFAULT NULL,
+  `shape` polygon /*!80003 SRID 3857 */ DEFAULT NULL,
+  `multi_locations` multipoint /*!80003 SRID 3857 */ DEFAULT NULL,
+  `multi_lines` multilinestring /*!80003 SRID 3857 */ DEFAULT NULL,
+  `multi_shapes` multipolygon /*!80003 SRID 3857 */ DEFAULT NULL,
+  `multi_geometries` geomcollection /*!80003 SRID 3857 */ DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci';
 
@@ -190,7 +195,7 @@ class MigrationTest extends IntegrationBaseTestCase
      */
     public function test_postgis_TableWasCreatedWithSrid()
     {
-        $expectedColumns = array_merge($this->getExpectedColumns(4322), [
+        $expectedColumns = array_merge($this->getExpectedColumns(3857), [
             "location" => [
                 "notnull" => false,
                 "default" => null,
@@ -200,7 +205,5 @@ class MigrationTest extends IntegrationBaseTestCase
         unset($expectedColumns['updated_at']);
 
         $this->assertPostgisTable('with_srid', $expectedColumns);
-
-        $dog = 1;
     }
 }

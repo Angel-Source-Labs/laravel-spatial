@@ -37,14 +37,14 @@ class CreateLocationTables extends Migration
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_unicode_ci';
             $table->increments('id');
-            $table->geometry('geo', 4322)->default(null)->nullable();
-            $table->point('location', 4322)->default(null)->nullable();
-            $table->lineString('line', 4322)->default(null)->nullable();
-            $table->polygon('shape', 4322)->default(null)->nullable();
-            $table->multiPoint('multi_locations', 4322)->default(null)->nullable();
-            $table->multiLineString('multi_lines', 4322)->default(null)->nullable();
-            $table->multiPolygon('multi_shapes', 4322)->default(null)->nullable();
-            $table->geometryCollection('multi_geometries', 4322)->default(null)->nullable();
+            $table->geometry('geo', 3857)->default(null)->nullable();
+            $table->point('location', 3857)->default(null)->nullable();
+            $table->lineString('line', 3857)->default(null)->nullable();
+            $table->polygon('shape', 3857)->default(null)->nullable();
+            $table->multiPoint('multi_locations', 3857)->default(null)->nullable();
+            $table->multiLineString('multi_lines', 3857)->default(null)->nullable();
+            $table->multiPolygon('multi_shapes', 3857)->default(null)->nullable();
+            $table->geometryCollection('multi_geometries', 3857)->default(null)->nullable();
         });
     }
 

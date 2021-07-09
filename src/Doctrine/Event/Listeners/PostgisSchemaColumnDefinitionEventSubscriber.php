@@ -20,10 +20,18 @@ class PostgisSchemaColumnDefinitionEventSubscriber implements EventSubscriber
         if (! ($platform instanceof PostgreSQL100Platform)) return;
 
         $tableColumn = $args->getTableColumn();
-        if ($tableColumn['type'] != 'geography') return;
+        if ($tableColumn['type'] != 'geography' && $tableColumn['type'] != 'geometry') return;
 
-        preg_match('/geography\((.*),(.*)\)/', $tableColumn['complete_type'], $matches, PREG_OFFSET_CAPTURE);
-        $type = strtolower($matches[1][0]);
+        if ($tableColumn['type'] == 'geography') {
+            preg_match('/geography\((.*),(.*)\)/', $tableColumn['complete_type'], $matches, PREG_OFFSET_CAPTURE);
+            $type = strtolower($matches[1][0]);
+            $srid = (int)$matches[2][0];
+        }
+        elseif ($tableColumn['type'] == 'geometry') {
+            preg_match('/geometry\(([^,]*),?(.+)?\)/', $tableColumn['complete_type'], $matches, PREG_OFFSET_CAPTURE);
+            $type = empty($matches) ? 'geometry' : strtolower($matches[1][0]);
+            $srid = isset($matches[2]) ? (int)$matches[2][0] : null;
+        }
 
         $options = [
             'notnull'       => (bool) $tableColumn['isnotnull'],
@@ -33,10 +41,10 @@ class PostgisSchemaColumnDefinitionEventSubscriber implements EventSubscriber
                 : null,
         ];
 
-        $srid = (int) $matches[2][0];
 
         $column = new Column($tableColumn['field'], Type::getType($type), $options);
-        $column->setCustomSchemaOption('srid', $srid);
+        if (isset($srid) && $srid > 0)
+            $column->setCustomSchemaOption('srid', $srid);
         $args->setColumn($column);
         $args->preventDefault();
     }

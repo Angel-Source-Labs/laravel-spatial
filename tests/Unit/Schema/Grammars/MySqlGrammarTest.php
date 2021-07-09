@@ -179,13 +179,13 @@ class MySqlGrammarTest extends BaseTestCase
         $addStatements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
 
         $this->assertEquals(2, count($addStatements));
-        $this->assertEquals('alter table `test` add spatial `test_foo_spatial`(`foo`)', $addStatements[1]);
+        $this->assertEquals('alter table `test` add spatial index `test_foo_spatialindex`(`foo`)', $addStatements[1]);
 
         $blueprint->dropSpatialIndex(['foo']);
-        $blueprint->dropSpatialIndex('test_foo_spatial');
+        $blueprint->dropSpatialIndex('test_foo_spatialindex');
         $dropStatements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
 
-        $expectedSql = 'alter table `test` drop index `test_foo_spatial`';
+        $expectedSql = 'alter table `test` drop index `test_foo_spatialindex`';
         $this->assertEquals(5, count($dropStatements));
         $this->assertEquals($expectedSql, $dropStatements[3]);
         $this->assertEquals($expectedSql, $dropStatements[4]);

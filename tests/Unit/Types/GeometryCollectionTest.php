@@ -57,7 +57,7 @@ class GeometryCollectionTest extends BaseTestCase
 
     public function testToWKTWithEmptyGeometryCollection()
     {
-        $this->assertEquals('GEOMETRYCOLLECTION()', (new GeometryCollection([]))->toWKT());
+        $this->assertEquals('GEOMETRYCOLLECTION EMPTY', (new GeometryCollection([]))->toWKT());
     }
 
     public function testInvalidArgumentExceptionNotArrayGeometries()

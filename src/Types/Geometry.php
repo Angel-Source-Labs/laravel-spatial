@@ -73,33 +73,31 @@ abstract class Geometry implements GeometryInterface, Jsonable, \JsonSerializabl
         }
     }
 
+    /**
+     * MySQL stores geometry values using 4 bytes to indicate the SRID followed by the WKB representation of the value.
+     * For a description of WKB format, see Well-Known Binary (WKB) Format.
+     * https://dev.mysql.com/doc/refman/8.0/en/gis-data-formats.html
+     *
+     * @param $wkb
+     * @return mixed
+     */
     public static function fromWKB($wkb)
     {
-        $srid = substr($wkb, 0, 4);
-        $srid = unpack('L', $srid)[1];
+        $format = preg_match('/^[0-9a-fA-F]*$/', $wkb) ? "EWKB" : "MYSQL";
 
-        /**
-         * The reason for this change is because there are 4 null bytes pre-pended in grimzy which are the srid
-         */
-        $wkb = substr($wkb, 4);
-        /** @var Added by me $wkb */
-//        $wkb = substr($wkb, 0);
+        if ($format == "MYSQL") {
+            $srid = substr($wkb, 0, 4);
+            $srid = unpack('L', $srid)[1];
+            $wkb = substr($wkb, 4);
+        }
+
         /** @var  $parser */
-
         $parser = new Parser(new Factory());
 
         /** @var Geometry $parsed */
-
-        /**Added by me
-        echo($wkb);
-        echo("\n");
-         * */
-
         $parsed = $parser->parse($wkb);
 
-//        $parsed->getExpression();
-
-        if ($srid > 0) {
+        if (isset($srid) && $srid > 0) {
             $parsed->setSrid($srid);
         }
 

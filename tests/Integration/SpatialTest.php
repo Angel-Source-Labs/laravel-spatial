@@ -15,9 +15,11 @@ use Tests\Integration\Models\GeometryModel;
 use Tests\Integration\Models\NoSpatialFieldsModel;
 use Tests\PreparesExpressions;
 
-class SpatialTest extends IntegrationBaseTestCase
+abstract class SpatialTest extends IntegrationBaseTestCase
 {
     use PreparesExpressions;
+
+    protected $table = 'geometry_test';
 
     public function testSpatialFieldsNotDefinedException()
     {
@@ -34,7 +36,7 @@ class SpatialTest extends IntegrationBaseTestCase
         $geo = new GeometryModel();
         $geo->location = new Point(1, 2);
         $geo->save();
-        $this->assertDatabaseHas('geometry', ['id' => $geo->id]);
+        $this->assertDatabaseHas($this->table, ['id' => $geo->id]);
     }
 
     public function testInsertLineString()
@@ -44,7 +46,7 @@ class SpatialTest extends IntegrationBaseTestCase
         $geo->location = new Point(1, 2);
         $geo->line = new LineString([new Point(1, 1), new Point(2, 2)]);
         $geo->save();
-        $this->assertDatabaseHas('geometry', ['id' => $geo->id]);
+        $this->assertDatabaseHas($this->table, ['id' => $geo->id]);
     }
 
     public function testInsertPolygon()
@@ -54,7 +56,7 @@ class SpatialTest extends IntegrationBaseTestCase
         $geo->location = new Point(1, 2);
         $geo->shape = Polygon::fromWKT('POLYGON((0 10,10 10,10 0,0 0,0 10))');
         $geo->save();
-        $this->assertDatabaseHas('geometry', ['id' => $geo->id]);
+        $this->assertDatabaseHas($this->table, ['id' => $geo->id]);
     }
 
     public function testInsertMultiPoint()
@@ -64,7 +66,7 @@ class SpatialTest extends IntegrationBaseTestCase
         $geo->location = new Point(1, 2);
         $geo->multi_locations = new MultiPoint([new Point(1, 1), new Point(2, 2)]);
         $geo->save();
-        $this->assertDatabaseHas('geometry', ['id' => $geo->id]);
+        $this->assertDatabaseHas($this->table, ['id' => $geo->id]);
     }
 
     public function testInsertMultiPolygon()
@@ -78,7 +80,7 @@ class SpatialTest extends IntegrationBaseTestCase
             Polygon::fromWKT('POLYGON((0 0,0 5,5 5,5 0,0 0))'),
         ]);
         $geo->save();
-        $this->assertDatabaseHas('geometry', ['id' => $geo->id]);
+        $this->assertDatabaseHas($this->table, ['id' => $geo->id]);
     }
 
     public function testInsertGeometryCollection()
@@ -93,7 +95,7 @@ class SpatialTest extends IntegrationBaseTestCase
             new Point(0, 0),
         ]);
         $geo->save();
-        $this->assertDatabaseHas('geometry', ['id' => $geo->id]);
+        $this->assertDatabaseHas($this->table, ['id' => $geo->id]);
     }
 
     public function testInsertEmptyGeometryCollection()
@@ -104,7 +106,7 @@ class SpatialTest extends IntegrationBaseTestCase
 
         $geo->multi_geometries = new GeometryCollection([]);
         $geo->save();
-        $this->assertDatabaseHas('geometry', ['id' => $geo->id]);
+        $this->assertDatabaseHas($this->table, ['id' => $geo->id]);
 
         $geo2 = GeometryModel::find($geo->id);
         $this->assertInstanceOf(GeometryCollection::class, $geo2->multi_geometries);
@@ -121,7 +123,7 @@ class SpatialTest extends IntegrationBaseTestCase
         $to_update->location = new Point(2, 3);
         $to_update->save();
 
-        $this->assertDatabaseHas('geometry', ['id' => $to_update->id]);
+        $this->assertDatabaseHas($this->table, ['id' => $to_update->id]);
 
         $all = GeometryModel::all();
         $this->assertCount(1, $all);
@@ -146,6 +148,8 @@ class SpatialTest extends IntegrationBaseTestCase
         $loc3->location = new Point(3, 3); // Distance from loc1: 2.8284271247462
         $loc3->save();
 
+        $query = GeometryModel::distance('location', $loc1->location, 2);
+        $sql = $query->toSql();
         $a = GeometryModel::distance('location', $loc1->location, 2)->get();
 //        $this->prepareExpressions($a->pluck('location'));
         $this->assertCount(2, $a);
@@ -235,11 +239,12 @@ class SpatialTest extends IntegrationBaseTestCase
         $this->assertCount(2, $a);
         $this->assertEquals(0, $a[0]->distance);
 
-        if ($this->after_fix) {
-            $this->assertEquals(44.7414064842, $a[1]->distance); // PHP floats' 11th+ digits don't matter
-        } else {
-            $this->assertEquals(44.7414064845, $a[1]->distance); // PHP floats' 11th+ digits don't matter
-        }
+        $this->assertEqualsWithDelta(44.7414064842, $a[1]->distance, 0.0002);
+//        if ($this->after_fix) {
+//            $this->assertEq(44.7414064842, $a[1]->distance); // PHP floats' 11th+ digits don't matter
+//        } else {
+//            $this->assertEquals(44.7414064845, $a[1]->distance); // PHP floats' 11th+ digits don't matter
+//        }
     }
 
     public function testOrderBySpatialWithUnknownFunction()

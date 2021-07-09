@@ -14,21 +14,6 @@ class Point extends Type
         return 'point';
     }
 
-    public function convertToPHPValue($value, AbstractPlatform $platform)
-    {
-        return \AngelSourceLabs\LaravelSpatial\Types\Point::fromWKB($value);
-    }
-
-    /**
-     * @param \AngelSourceLabs\LaravelSpatial\Types\Point $value
-     * @param AbstractPlatform $platform
-     * @return mixed|void
-     */
-    public function convertToDatabaseValue($value, AbstractPlatform $platform)
-    {
-        return $value->getValue();
-    }
-
     public function getName()
     {
         return self::POINT;

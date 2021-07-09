@@ -10,6 +10,11 @@ use Tests\Unit\Stubs\PDOStub;
 
 class MysqlConnectionTest extends IntegrationBaseTestCase
 {
+    public function getEnvironmentSetUp($app)
+    {
+        $this->useMySqlConnection($app);
+    }
+
     public function testGetSchemaBuilder()
     {
         $builder = DB::connection()->getSchemaBuilder();

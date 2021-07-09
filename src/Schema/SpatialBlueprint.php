@@ -6,6 +6,16 @@ use Illuminate\Database\Schema\Blueprint;
 
 class SpatialBlueprint extends Blueprint
 {
+    const GEOMETRY = 0;
+    const GEOGRAPHY = 1;
+
+    public function spatialColumn($type, $column, $srid = null, $mode = self::GEOMETRY)
+    {
+        $projection = $srid;
+        $isGeometry = $mode == self::GEOMETRY;
+        return $this->addColumn($type, $column, compact('srid', 'projection', 'isGeometry'));
+    }
+
     /**
      * Add a geometry column on the table.
      *
@@ -14,10 +24,9 @@ class SpatialBlueprint extends Blueprint
      *
      * @return \Illuminate\Support\Fluent
      */
-    public function geometry($column, $srid = null)
+    public function geometry($column, $srid = null, $mode = self::GEOMETRY)
     {
-        $projection = $srid;
-        return $this->addColumn('geometry', $column, compact('srid', 'projection'));
+        return $this->spatialColumn('geometry', $column, $srid, $mode);
     }
 
     /**
@@ -28,10 +37,9 @@ class SpatialBlueprint extends Blueprint
      *
      * @return \Illuminate\Support\Fluent
      */
-    public function point($column, $srid = null)
+    public function point($column, $srid = null, $mode = self::GEOMETRY)
     {
-        $projection = $srid;
-        return $this->addColumn('point', $column, compact('srid', 'projection'));
+        return $this->spatialColumn('point', $column, $srid, $mode);
     }
 
     /**
@@ -42,10 +50,9 @@ class SpatialBlueprint extends Blueprint
      *
      * @return \Illuminate\Support\Fluent
      */
-    public function lineString($column, $srid = null)
+    public function lineString($column, $srid = null, $mode = self::GEOMETRY)
     {
-        $projection = $srid;
-        return $this->addColumn('linestring', $column, compact('srid', 'projection'));
+        return $this->spatialColumn('linestring', $column, $srid, $mode);
     }
 
     /**
@@ -56,10 +63,9 @@ class SpatialBlueprint extends Blueprint
      *
      * @return \Illuminate\Support\Fluent
      */
-    public function polygon($column, $srid = null)
+    public function polygon($column, $srid = null, $mode = self::GEOMETRY)
     {
-        $projection = $srid;
-        return $this->addColumn('polygon', $column, compact('srid', 'projection'));
+        return $this->spatialColumn('polygon', $column, $srid, $mode);
     }
 
     /**
@@ -70,10 +76,9 @@ class SpatialBlueprint extends Blueprint
      *
      * @return \Illuminate\Support\Fluent
      */
-    public function multiPoint($column, $srid = null)
+    public function multiPoint($column, $srid = null, $mode = self::GEOMETRY)
     {
-        $projection = $srid;
-        return $this->addColumn('multipoint', $column, compact('srid', 'projection'));
+        return $this->spatialColumn('multipoint', $column, $srid, $mode);
     }
 
     /**
@@ -84,10 +89,9 @@ class SpatialBlueprint extends Blueprint
      *
      * @return \Illuminate\Support\Fluent
      */
-    public function multiLineString($column, $srid = null)
+    public function multiLineString($column, $srid = null, $mode = self::GEOMETRY)
     {
-        $projection = $srid;
-        return $this->addColumn('multilinestring', $column, compact('srid', 'projection'));
+        return $this->spatialColumn('multilinestring', $column, $srid, $mode);
     }
 
     /**
@@ -98,10 +102,9 @@ class SpatialBlueprint extends Blueprint
      *
      * @return \Illuminate\Support\Fluent
      */
-    public function multiPolygon($column, $srid = null)
+    public function multiPolygon($column, $srid = null, $mode = self::GEOMETRY)
     {
-        $projection = $srid;
-        return $this->addColumn('multipolygon', $column, compact('srid', 'projection'));
+        return $this->spatialColumn('multipolygon', $column, $srid, $mode);
     }
 
     /**
@@ -112,10 +115,9 @@ class SpatialBlueprint extends Blueprint
      *
      * @return \Illuminate\Support\Fluent
      */
-    public function geometryCollection($column, $srid = null)
+    public function geometryCollection($column, $srid = null, $mode = self::GEOMETRY)
     {
-        $projection = $srid;
-        return $this->addColumn('geometrycollection', $column, compact('srid', 'projection'));
+        return $this->spatialColumn('geometrycollection', $column, $srid, $mode);
     }
 
 //    /**

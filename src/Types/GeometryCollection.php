@@ -55,9 +55,19 @@ class GeometryCollection extends Geometry implements IteratorAggregate, ArrayAcc
         return $this->items;
     }
 
+    /**
+     * Postgis requires GEOMETRYCOLLECTION EMPTY and does not accept GEOMETRYCOLLECTION()
+     * See discussion https://gis.stackexchange.com/questions/106932/empty-geometries-in-geometrycollection
+     *
+     * MySQL accepts both forms
+     *
+     * @return string
+     */
     public function toWKT()
     {
-        return sprintf('GEOMETRYCOLLECTION(%s)', (string) $this);
+        return empty($this->items) ?
+            'GEOMETRYCOLLECTION EMPTY' :
+            sprintf('GEOMETRYCOLLECTION(%s)', (string) $this);
     }
 
     public function __toString()

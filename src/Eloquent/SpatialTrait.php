@@ -2,6 +2,7 @@
 
 namespace AngelSourceLabs\LaravelSpatial\Eloquent;
 
+use AngelSourceLabs\LaravelExpressions\Database\Query\Expression\ExpressionWithBindings;
 use AngelSourceLabs\LaravelExpressions\Database\Query\Expression\Grammar;
 use AngelSourceLabs\LaravelExpressions\Eloquent\HasExpressionAttributes;
 use AngelSourceLabs\LaravelSpatial\Exceptions\SpatialFieldsNotDefinedException;
@@ -168,7 +169,7 @@ trait SpatialTrait
 
         $expression = new Expression(Grammar::make()
             ->mySql("st_distance_sphere(`$geometryColumn`, ST_GeomFromText(?, ?, 'axis-order=long-lat')) <= ?")
-            ->postgres("st_distance_sphere(\"$geometryColumn\", ST_GeomFromText(?, ?)) <= ?")
+            ->postgres("st_distanceSphere(\"$geometryColumn\", ST_GeomFromText(?, ?)) <= ?")
         );
 
         $query->whereRaw($expression, [
@@ -188,7 +189,7 @@ trait SpatialTrait
 
         $expression = new Expression(Grammar::make()
             ->mySql("st_distance_sphere(`$geometryColumn`, ST_GeomFromText(?, ?, 'axis-order=long-lat')) != 0")
-            ->postgres("st_distance_sphere(\"$geometryColumn\", ST_GeomFromText(?, ?)) != 0")
+            ->postgres("st_distanceSphere(\"$geometryColumn\", ST_GeomFromText(?, ?)) != 0")
         );
 
         $query->whereRaw($expression, [
@@ -211,7 +212,7 @@ trait SpatialTrait
 
         $expression = new Expression(Grammar::make()
             ->mySql("st_distance_sphere(`$geometryColumn`, ST_GeomFromText(?, ?, 'axis-order=long-lat')) as distance")
-            ->postgres("st_distance_sphere(\"$geometryColumn\", ST_GeomFromText(?, ?)) as distance")
+            ->postgres("st_distanceSphere(\"$geometryColumn\", ST_GeomFromText(?, ?)) as distance")
         );
 
         $query->selectRaw($expression, [
@@ -281,6 +282,30 @@ trait SpatialTrait
         return $this->scopeComparison($query, $geometryColumn, $geometry, 'touches');
     }
 
+    protected function orderByDistanceExpression($geometryColumn, $geometry, $direction = 'asc')
+    {
+        return new ExpressionWithBindings(Grammar::make()
+            ->mySql("st_distance(`$geometryColumn`, ST_GeomFromText(?, ?, 'axis-order=long-lat')) {$direction}")
+            ->postgres("st_distance(\"$geometryColumn\", ST_GeomFromText(?, ?)) {$direction}"),
+            [
+                $geometry->toWkt(),
+                $geometry->getSrid(),
+            ]
+        );
+    }
+
+    protected function orderByDistanceSphereExpression($geometryColumn, $geometry, $direction = 'asc')
+    {
+        return new ExpressionWithBindings(Grammar::make()
+            ->mySql("st_distance_sphere(`$geometryColumn`, ST_GeomFromText(?, ?, 'axis-order=long-lat')) {$direction}")
+            ->postgres("st_distanceSphere(\"$geometryColumn\", ST_GeomFromText(?, ?)) {$direction}"),
+            [
+                $geometry->toWkt(),
+                $geometry->getSrid(),
+            ]
+        );
+    }
+
     public function scopeOrderBySpatial($query, $geometryColumn, $geometry, $orderFunction, $direction = 'asc')
     {
         $this->isColumnAllowed($geometryColumn);
@@ -289,15 +314,13 @@ trait SpatialTrait
             throw new UnknownSpatialFunctionException($orderFunction);
         }
 
-        $expression = new Expression(Grammar::make()
-            ->mySql("st_{$orderFunction}(`$geometryColumn`, ST_GeomFromText(?, ?, 'axis-order=long-lat')) {$direction}")
-            ->postgres("st_{$orderFunction}(\"$geometryColumn\", ST_GeomFromText(?, ?)) {$direction}")
-        );
+        $getExpression = [
+            'distance' => [$this, 'orderByDistanceExpression'],
+            'distance_sphere' => [$this, 'orderByDistanceSphereExpression'],
+            'distanceSphere' => [$this, 'orderByDistanceSphereExpression'],
+        ];
 
-        $query->orderByRaw($expression, [
-            $geometry->toWkt(),
-            $geometry->getSrid(),
-        ]);
+        $query->orderByRaw($getExpression[$orderFunction]($geometryColumn, $geometry, $direction));
 
         return $query;
     }

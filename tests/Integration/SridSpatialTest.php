@@ -11,7 +11,7 @@ use AngelSourceLabs\LaravelSpatial\Types\Polygon;
 use Illuminate\Database\QueryException;
 use Tests\Integration\Models\WithSridModel;
 
-class SridSpatialTest extends IntegrationBaseTestCase
+abstract class SridSpatialTest extends IntegrationBaseTestCase
 {
 //    protected $migrations = [
 //        CreateLocationTable::class,
@@ -109,18 +109,12 @@ class SridSpatialTest extends IntegrationBaseTestCase
     public function testInsertPointWithWrongSrid()
     {
         $geo = new WithSridModel();
-        $geo->location = new Point(1, 2);
+        $geo->location = new Point(1, 2, 4326);
 
-        $this->assertException(
-            QueryException::class,
-            'SQLSTATE[HY000]: General error: 3643 The SRID of the geometry '.
-            'does not match the SRID of the column \'location\'. The SRID '.
-            'of the geometry is 0, but the SRID of the column is 3857. '.
-            'Consider changing the SRID of the geometry or the SRID property '.
-            'of the column. (SQL: insert into `with_srid` (`location`) values '.
-            '(ST_GeomFromText(POINT(2 1), 0, \'axis-order=long-lat\')))'
-        );
+        $this->assertException(QueryException::class);
         $geo->save();
+
+        // SQLSTATE[22023]: Invalid parameter value: 7 ERROR:  Geometry SRID (4326) does not match column SRID (3857) (SQL: insert into "with_srid" ("location") values (ST_GeomFromText(POINT(2 1), 4326)) returning "id")
     }
 
     public function testGeometryInsertedHasRightSrid()
