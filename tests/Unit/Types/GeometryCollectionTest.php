@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Types;
 
+use AngelSourceLabs\LaravelExpressions\Database\Query\Expression\Grammar;
 use AngelSourceLabs\LaravelSpatial\Types\GeometryCollection;
 use AngelSourceLabs\LaravelSpatial\Types\GeometryInterface;
 use AngelSourceLabs\LaravelSpatial\Types\LineString;
@@ -57,7 +58,18 @@ class GeometryCollectionTest extends BaseTestCase
 
     public function testToWKTWithEmptyGeometryCollection()
     {
-        $this->assertEquals('GEOMETRYCOLLECTION EMPTY', (new GeometryCollection([]))->toWKT());
+        $geometryCollection = (new GeometryCollection([]))->toWKT();
+        $this->assertInstanceOf(Grammar::class, $geometryCollection);
+
+        /** @var Grammar $geometryCollection */
+        $geometryCollection->driver('mysql')->version('5.7.1');
+        $this->assertEquals('GEOMETRYCOLLECTION()', $geometryCollection);
+
+        $geometryCollection->driver('mysql')->version('8.0.22');
+        $this->assertEquals('GEOMETRYCOLLECTION EMPTY', $geometryCollection);
+
+        $geometryCollection->driver('pgsql')->version('12.0.22');
+        $this->assertEquals('GEOMETRYCOLLECTION EMPTY', $geometryCollection);
     }
 
     public function testInvalidArgumentExceptionNotArrayGeometries()

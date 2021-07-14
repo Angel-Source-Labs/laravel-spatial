@@ -39,6 +39,12 @@ class TestPDO extends PDO
         return $stmt;
     }
 
+    public function getAttribute($attribute)
+    {
+        if ($attribute & PDO::ATTR_SERVER_VERSION) return "8.0.22";
+        return parent::getAttribute($attribute);
+    }
+
     public function mockExists($exists = true)
     {
         $this->exists = $exists;

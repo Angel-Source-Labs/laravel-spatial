@@ -40,7 +40,7 @@ class BuilderTest extends BaseTestCase
         $point = new Point(1, 2);
         $this->queryBuilder
             ->shouldReceive('update')
-            ->with(['point' => new SpatialExpression($point)])
+            ->with(['point' => $point])
             ->once()
             ->andReturn(1);
 
@@ -55,7 +55,7 @@ class BuilderTest extends BaseTestCase
 
         $this->queryBuilder
             ->shouldReceive('update')
-            ->with(['linestring' => new SpatialExpression($linestring)])
+            ->with(['linestring' => $linestring])
             ->once()
             ->andReturn(1);
 
@@ -73,7 +73,7 @@ class BuilderTest extends BaseTestCase
 
         $this->queryBuilder
             ->shouldReceive('update')
-            ->with(['polygon' => new SpatialExpression($polygon)])
+            ->with(['polygon' => $polygon])
             ->once()
             ->andReturn(1);
 
@@ -87,7 +87,7 @@ class BuilderTest extends BaseTestCase
         $point = new Point(1, 2, 4326);
         $this->queryBuilder
             ->shouldReceive('update')
-            ->with(['point' => new SpatialExpression($point)])
+            ->with(['point' => $point])
             ->once()
             ->andReturn(1);
 
@@ -102,7 +102,7 @@ class BuilderTest extends BaseTestCase
 
         $this->queryBuilder
             ->shouldReceive('update')
-            ->with(['linestring' => new SpatialExpression($linestring)])
+            ->with(['linestring' => $linestring])
             ->once()
             ->andReturn(1);
 
@@ -120,7 +120,7 @@ class BuilderTest extends BaseTestCase
 
         $this->queryBuilder
             ->shouldReceive('update')
-            ->with(['polygon' => new SpatialExpression($polygon)])
+            ->with(['polygon' => $polygon])
             ->once()
             ->andReturn(1);
 

@@ -1,13 +1,13 @@
 version: '3.3'
 services:
-#  mysql57:
-#      image: mysql:5.7
-#      ports:
-#        - "330657:3306"
-#      environment:
-#        MYSQL_DATABASE: 'spatial_test'
-#        MYSQL_ROOT_PASSWORD: ''
-#        MYSQL_ALLOW_EMPTY_PASSWORD: 1
+  mysql57:
+      image: mysql:5.7
+      ports:
+        - "33067:3306"
+      environment:
+        MYSQL_DATABASE: 'spatial_test'
+        MYSQL_ROOT_PASSWORD: ''
+        MYSQL_ALLOW_EMPTY_PASSWORD: 1
   mysql80:
     image: mysql:8.0
     ports:

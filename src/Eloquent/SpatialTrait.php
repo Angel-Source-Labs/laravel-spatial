@@ -108,7 +108,8 @@ trait SpatialTrait
         $this->isColumnAllowed($geometryColumn);
 
         $expression = new Expression(Grammar::make()
-            ->mySql("st_distance(`$geometryColumn`, ST_GeomFromText(?, ?, 'axis-order=long-lat')) <= ?")
+            ->mySql("st_distance(`$geometryColumn`, ST_GeomFromText(?, ?)) <= ?")
+            ->mySql("st_distance(`$geometryColumn`, ST_GeomFromText(?, ?, 'axis-order=long-lat')) <= ?", "8.0")
             ->postgres("st_distance(\"$geometryColumn\", ST_GeomFromText(?, ?)) <= ?")
         );
 
@@ -128,7 +129,8 @@ trait SpatialTrait
         $query = $this->scopeDistance($query, $geometryColumn, $geometry, $distance);
 
         $expression = new Expression(Grammar::make()
-            ->mySql("st_distance(`$geometryColumn`, ST_GeomFromText(?, ?, 'axis-order=long-lat')) != 0")
+            ->mySql("st_distance(`$geometryColumn`, ST_GeomFromText(?, ?)) != 0")
+            ->mySql("st_distance(`$geometryColumn`, ST_GeomFromText(?, ?, 'axis-order=long-lat')) != 0", "8.0")
             ->postgres("st_distance(\"$geometryColumn\", ST_GeomFromText(?, ?)) != 0")
         );
 
@@ -151,7 +153,8 @@ trait SpatialTrait
         }
 
         $expression = new Expression(Grammar::make()
-            ->mySql("st_distance(`$geometryColumn`, ST_GeomFromText(?, ?, 'axis-order=long-lat')) as distance")
+            ->mySql("st_distance(`$geometryColumn`, ST_GeomFromText(?, ?)) as distance")
+            ->mySql("st_distance(`$geometryColumn`, ST_GeomFromText(?, ?, 'axis-order=long-lat')) as distance", "8.0")
             ->postgres("st_distance(\"$geometryColumn\", ST_GeomFromText(?, ?)) as distance")
         );
 
@@ -168,7 +171,8 @@ trait SpatialTrait
         $this->isColumnAllowed($geometryColumn);
 
         $expression = new Expression(Grammar::make()
-            ->mySql("st_distance_sphere(`$geometryColumn`, ST_GeomFromText(?, ?, 'axis-order=long-lat')) <= ?")
+            ->mySql("st_distance_sphere(`$geometryColumn`, ST_GeomFromText(?, ?)) <= ?")
+            ->mySql("st_distance_sphere(`$geometryColumn`, ST_GeomFromText(?, ?, 'axis-order=long-lat')) <= ?", "8.0")
             ->postgres("st_distanceSphere(\"$geometryColumn\", ST_GeomFromText(?, ?)) <= ?")
         );
 
@@ -188,7 +192,8 @@ trait SpatialTrait
         $query = $this->scopeDistanceSphere($query, $geometryColumn, $geometry, $distance);
 
         $expression = new Expression(Grammar::make()
-            ->mySql("st_distance_sphere(`$geometryColumn`, ST_GeomFromText(?, ?, 'axis-order=long-lat')) != 0")
+            ->mySql("st_distance_sphere(`$geometryColumn`, ST_GeomFromText(?, ?)) != 0")
+            ->mySql("st_distance_sphere(`$geometryColumn`, ST_GeomFromText(?, ?, 'axis-order=long-lat')) != 0", "8.0")
             ->postgres("st_distanceSphere(\"$geometryColumn\", ST_GeomFromText(?, ?)) != 0")
         );
 
@@ -211,7 +216,8 @@ trait SpatialTrait
         }
 
         $expression = new Expression(Grammar::make()
-            ->mySql("st_distance_sphere(`$geometryColumn`, ST_GeomFromText(?, ?, 'axis-order=long-lat')) as distance")
+            ->mySql("st_distance_sphere(`$geometryColumn`, ST_GeomFromText(?, ?)) as distance")
+            ->mySql("st_distance_sphere(`$geometryColumn`, ST_GeomFromText(?, ?, 'axis-order=long-lat')) as distance", "8.0")
             ->postgres("st_distanceSphere(\"$geometryColumn\", ST_GeomFromText(?, ?)) as distance")
         );
 
@@ -230,7 +236,8 @@ trait SpatialTrait
         }
 
         $expression = new Expression(Grammar::make()
-            ->mySql("st_{$relationship}(`$geometryColumn`, ST_GeomFromText(?, ?, 'axis-order=long-lat'))")
+            ->mySql("st_{$relationship}(`$geometryColumn`, ST_GeomFromText(?, ?))")
+            ->mySql("st_{$relationship}(`$geometryColumn`, ST_GeomFromText(?, ?, 'axis-order=long-lat'))", "8.0")
             ->postgres("st_{$relationship}(\"$geometryColumn\", ST_GeomFromText(?, ?))")
         );
 
@@ -285,7 +292,8 @@ trait SpatialTrait
     protected function orderByDistanceExpression($geometryColumn, $geometry, $direction = 'asc')
     {
         return new ExpressionWithBindings(Grammar::make()
-            ->mySql("st_distance(`$geometryColumn`, ST_GeomFromText(?, ?, 'axis-order=long-lat')) {$direction}")
+            ->mySql("st_distance(`$geometryColumn`, ST_GeomFromText(?, ?)) {$direction}")
+            ->mySql("st_distance(`$geometryColumn`, ST_GeomFromText(?, ?, 'axis-order=long-lat')) {$direction}", "8.0")
             ->postgres("st_distance(\"$geometryColumn\", ST_GeomFromText(?, ?)) {$direction}"),
             [
                 $geometry->toWkt(),
@@ -297,7 +305,8 @@ trait SpatialTrait
     protected function orderByDistanceSphereExpression($geometryColumn, $geometry, $direction = 'asc')
     {
         return new ExpressionWithBindings(Grammar::make()
-            ->mySql("st_distance_sphere(`$geometryColumn`, ST_GeomFromText(?, ?, 'axis-order=long-lat')) {$direction}")
+            ->mySql("st_distance_sphere(`$geometryColumn`, ST_GeomFromText(?, ?)) {$direction}")
+            ->mySql("st_distance_sphere(`$geometryColumn`, ST_GeomFromText(?, ?, 'axis-order=long-lat')) {$direction}", "8.0")
             ->postgres("st_distanceSphere(\"$geometryColumn\", ST_GeomFromText(?, ?)) {$direction}"),
             [
                 $geometry->toWkt(),

@@ -20,6 +20,6 @@ class Builder extends EloquentBuilder
 
     protected function asWKT(GeometryInterface $geometry)
     {
-        return new SpatialExpression($geometry);
+        return $geometry;
     }
 }

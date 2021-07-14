@@ -26,6 +26,12 @@ trait DatabaseConnections
         ]);
     }
 
+    public function useMySql57Connection($app)
+    {
+        $this->useMySqlConnection($app);
+        $app['config']->set('database.connections.mysql.port', env('DB_PORT', '33067'));
+    }
+
     public function usePostgresConnection($app)
     {
         $this->dbDriver = 'pgsql';

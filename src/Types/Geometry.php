@@ -2,6 +2,8 @@
 
 namespace AngelSourceLabs\LaravelSpatial\Types;
 
+use AngelSourceLabs\LaravelExpressions\Database\Query\Expression\ExpressionWithBindings;
+use AngelSourceLabs\LaravelExpressions\Database\Query\Expression\Grammar;
 use GeoIO\WKB\Parser\Parser;
 use GeoJson\GeoJson;
 use AngelSourceLabs\LaravelSpatial\Eloquent\SpatialExpression;
@@ -23,7 +25,10 @@ abstract class Geometry implements GeometryInterface, Jsonable, \JsonSerializabl
 
     protected $srid;
     
-    protected $expression;
+    /**
+     * @var Grammar
+     */
+    protected $grammar;
 
     public function __construct($srid = 0)
     {
@@ -135,19 +140,17 @@ abstract class Geometry implements GeometryInterface, Jsonable, \JsonSerializabl
         return json_encode($this, $options);
     }
 
-    public function getExpression()
-    {
-        return $this->expression ?? $this->expression = new SpatialExpression($this);
-    }
-
     public function getBindings(): array
     {
-        return $this->getExpression()->getBindings();
+        return [$this->toWKT(), $this->getSrid()];
     }
 
     public function getValue()
     {
-        return $this->getExpression()->getValue();
+        return $this->grammar = $this->grammar ?? Grammar::make()
+                    ->mySql("ST_GeomFromText(?, ?)")
+                    ->mySql("ST_GeomFromText(?, ?, 'axis-order=long-lat')", "8.0")
+                    ->postgres("ST_GeomFromText(?, ?)");
     }
 
     public function __toString()

@@ -49,6 +49,33 @@ class MigrationTest extends IntegrationBaseTestCase
         $this->assertEquals($expected, $result->{'Create Table'});
     }
 
+    /**
+     * @environment-setup useMySql57Connection
+     */
+    public function test_mysql57_TableWasCreatedWithRightTypes()
+    {
+        $result = DB::selectOne('SHOW CREATE TABLE geometry_test');
+
+        $expected = 'CREATE TABLE `geometry_test` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `geo` geometry DEFAULT NULL,
+  `location` point NOT NULL,
+  `line` linestring DEFAULT NULL,
+  `shape` polygon DEFAULT NULL,
+  `multi_locations` multipoint DEFAULT NULL,
+  `multi_lines` multilinestring DEFAULT NULL,
+  `multi_shapes` multipolygon DEFAULT NULL,
+  `multi_geometries` geometrycollection DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  SPATIAL KEY `geometry_test_location_spatialindex` (`location`)
+) ENGINE=' . (config('database.connections.mysql.myisam') ? 'MyISAM' : 'InnoDB') . ' DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci';
+
+        $this->assertEquals('geometry_test', $result->Table);
+        $this->assertEquals($expected, $result->{'Create Table'});
+    }
+
     protected function getExpectedColumns($srid = null)
     {
         $expectedColumnPrototypes = [
