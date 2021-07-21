@@ -24,7 +24,7 @@
         "ext-pdo": "*",
         "ext-json": "*",
         "angel-source-labs/laravel-expressions": "dev-master",
-        "doctrine/dbal": "^2.6",
+        "doctrine/dbal": "^2.6|^3.0",
         "geo-io/wkb-parser": "^1.0",
         "jmikola/geojson": "^1.0",
         "laravel/framework": "^6.0|^7.0|^8.0"
