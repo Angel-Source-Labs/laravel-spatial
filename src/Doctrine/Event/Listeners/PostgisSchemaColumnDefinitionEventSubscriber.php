@@ -45,6 +45,7 @@ class PostgisSchemaColumnDefinitionEventSubscriber implements EventSubscriber
         $column = new Column($tableColumn['field'], Type::getType($type), $options);
         if (isset($srid) && $srid > 0)
             $column->setCustomSchemaOption('srid', $srid);
+        $column->setCustomSchemaOption('geometryType', $tableColumn['type']);
         $args->setColumn($column);
         $args->preventDefault();
     }

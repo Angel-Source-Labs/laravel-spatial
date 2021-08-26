@@ -161,10 +161,10 @@ class MigrationTest extends IntegrationBaseTestCase
 
         $expectedColumns = $expectedColumns ?? $this->getExpectedColumns();
 
-        foreach ($expectedColumns as $columnName => $columnProprety) {
+        foreach ($expectedColumns as $columnName => $columnProperty) {
             $this->assertArrayHasKey($columnName, $actualColumns, $columnName . " is not in table " . $table);
             $actualColumn = $actualColumns[$columnName]->toArray();
-            foreach ($columnProprety as $propName => $propValue) {
+            foreach ($columnProperty as $propName => $propValue) {
                 $actualValue = $actualColumn[$propName];
                 $actualValue = is_object($actualValue) ? get_class($actualValue) : $actualValue;
                 $this->assertEquals($propValue, $actualValue, "Mismatch " . $columnName . "->" . $propName);
@@ -177,7 +177,15 @@ class MigrationTest extends IntegrationBaseTestCase
      */
     public function test_postgis_TableWasCreatedWithRightTypes()
     {
-        $this->assertPostgisTable('geometry_test');
+        $expectedColumns = array_merge($this->getExpectedColumns(), [
+            "geo" => [
+                "geometryType" => "geometry"
+            ],
+            "location" => [
+                "geometryType" => "geometry"
+            ]
+        ]);
+        $this->assertPostgisTable('geometry_test', $expectedColumns);
     }
 
     /**
@@ -223,14 +231,39 @@ class MigrationTest extends IntegrationBaseTestCase
     public function test_postgis_TableWasCreatedWithSrid()
     {
         $expectedColumns = array_merge($this->getExpectedColumns(3857), [
+            "geo" => [
+                "geometryType" => "geometry"
+            ],
             "location" => [
                 "notnull" => false,
                 "default" => null,
+                "geometryType" => "geometry"
             ]
         ]);
         unset($expectedColumns['created_at']);
         unset($expectedColumns['updated_at']);
 
         $this->assertPostgisTable('with_srid', $expectedColumns);
+    }
+
+    /**
+     * @environment-setup usePostgresConnection
+     */
+    public function test_postgis_TableWasCreatedWithGeography()
+    {
+        $expectedColumns = array_merge($this->getExpectedColumns(4326), [
+            "geo" => [
+                "geometryType" => "geography"
+            ],
+            "location" => [
+                "notnull" => false,
+                "default" => null,
+                "geometryType" => "geography"
+            ]
+        ]);
+        unset($expectedColumns['created_at']);
+        unset($expectedColumns['updated_at']);
+
+        $this->assertPostgisTable('with_geography', $expectedColumns);
     }
 }

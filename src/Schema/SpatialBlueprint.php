@@ -12,7 +12,7 @@ class SpatialBlueprint extends Blueprint
     public function spatialColumn($type, $column, $srid = null, $mode = self::GEOMETRY)
     {
         $projection = $srid;
-        $isGeometry = $mode == self::GEOMETRY;
+        $isGeometry = $mode == self::GEOMETRY ? true : null; // note: Laravel Illuminate\Database\Schema\Grammars\PostgresGrammar checks for null instead of false
         return $this->addColumn($type, $column, compact('srid', 'projection', 'isGeometry'));
     }
 
