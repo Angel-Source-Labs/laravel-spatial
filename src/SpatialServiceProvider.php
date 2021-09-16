@@ -9,6 +9,7 @@ use AngelSourceLabs\LaravelSpatial\Schema\MySqlBuilder;
 use AngelSourceLabs\LaravelSpatial\Schema\PostgresBuilder;
 use AngelSourceLabs\LaravelSpatial\Schema\SQLiteBuilder;
 use AngelSourceLabs\LaravelSpatial\Schema\SqlServerBuilder;
+use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Types\Type as DoctrineType;
 use AngelSourceLabs\LaravelSpatial\Doctrine\Types\Geometry;
 use AngelSourceLabs\LaravelSpatial\Doctrine\Types\GeometryCollection;
@@ -20,6 +21,8 @@ use AngelSourceLabs\LaravelSpatial\Doctrine\Types\Point;
 use AngelSourceLabs\LaravelSpatial\Doctrine\Types\Polygon;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Schema\Grammars\PostgresGrammar;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 /**
  * Class DatabaseServiceProvider.
@@ -91,7 +94,9 @@ class SpatialServiceProvider extends \Illuminate\Support\ServiceProvider
             $dbPlatform->registerDoctrineTypeMapping($type, 'string');
         }
 
-        $dbPlatform->getEventManager()->addEventSubscriber(new PostgisSchemaColumnDefinitionEventSubscriber);
+        $eventManager = $dbPlatform->getEventManager();
+        if ($eventManager instanceof EventManager)
+            $eventManager->addEventSubscriber(new PostgisSchemaColumnDefinitionEventSubscriber);
 
     }
 
