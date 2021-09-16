@@ -21,8 +21,6 @@ use AngelSourceLabs\LaravelSpatial\Doctrine\Types\Point;
 use AngelSourceLabs\LaravelSpatial\Doctrine\Types\Polygon;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Schema\Grammars\PostgresGrammar;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 
 /**
  * Class DatabaseServiceProvider.
