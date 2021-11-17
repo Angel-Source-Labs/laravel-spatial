@@ -4,7 +4,6 @@ namespace Tests\Unit\Eloquent;
 
 use AngelSourceLabs\LaravelExpressions\Database\MySqlConnection;
 use AngelSourceLabs\LaravelSpatial\Eloquent\Builder;
-use AngelSourceLabs\LaravelSpatial\Eloquent\SpatialExpression;
 use AngelSourceLabs\LaravelSpatial\Eloquent\SpatialTrait;
 use AngelSourceLabs\LaravelSpatial\Types\LineString;
 use AngelSourceLabs\LaravelSpatial\Types\Point;

@@ -2,14 +2,11 @@
 
 namespace AngelSourceLabs\LaravelSpatial\Types;
 
-use AngelSourceLabs\LaravelExpressions\Database\Query\Expression\ExpressionWithBindings;
 use AngelSourceLabs\LaravelExpressions\Database\Query\Expression\Grammar;
 use GeoIO\WKB\Parser\Parser;
 use GeoJson\GeoJson;
-use AngelSourceLabs\LaravelSpatial\Eloquent\SpatialExpression;
 use AngelSourceLabs\LaravelSpatial\Exceptions\UnknownWKTTypeException;
 use Illuminate\Contracts\Support\Jsonable;
-use Illuminate\Database\Query\Expression;
 
 abstract class Geometry implements GeometryInterface, Jsonable, \JsonSerializable
 {
@@ -141,6 +138,9 @@ abstract class Geometry implements GeometryInterface, Jsonable, \JsonSerializabl
             $geoJson = $geoJson->getGeometry();
         }
 
+        /**
+         * @var $type GeometryInterface
+         */
         $type = '\AngelSourceLabs\LaravelSpatial\Types\\'.$geoJson->getType();
 
         return $type::fromJson($geoJson);
