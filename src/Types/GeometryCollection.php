@@ -2,7 +2,7 @@
 
 namespace AngelSourceLabs\LaravelSpatial\Types;
 
-use AngelSourceLabs\LaravelExpressions\Database\Query\Expression\Grammar;
+use AngelSourceLabs\LaravelExpressions\Database\Query\Expression\ExpressionGrammar;
 use ArrayAccess;
 use ArrayIterator;
 use Countable;
@@ -67,7 +67,7 @@ class GeometryCollection extends Geometry implements IteratorAggregate, ArrayAcc
     public function toWKT()
     {
         return empty($this->items) ?
-            Grammar::make()
+            ExpressionGrammar::make()
             ->mySql('GEOMETRYCOLLECTION()')
             ->mySql('GEOMETRYCOLLECTION EMPTY', "8.0")
             ->postgres('GEOMETRYCOLLECTION EMPTY')

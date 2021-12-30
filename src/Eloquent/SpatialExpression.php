@@ -2,15 +2,16 @@
 
 namespace AngelSourceLabs\LaravelSpatial\Eloquent;
 
+use AngelSourceLabs\LaravelExpressions\Database\Query\Expression\ExpressionGrammar;
 use AngelSourceLabs\LaravelExpressions\Database\Query\Expression\ExpressionWithBindings;
-use AngelSourceLabs\LaravelExpressions\Database\Query\Expression\Grammar;
+
 use Illuminate\Database\Query\Expression;
 
 class SpatialExpression extends Expression
 {
     protected static function grammar($gisFunction, $geometryColumn, $suffix)
     {
-        return Grammar::make()
+        return ExpressionGrammar::make()
             ->mySql("$gisFunction(`$geometryColumn`, ST_GeomFromText(?, ?)) $suffix")
             ->mySql("$gisFunction(`$geometryColumn`, ST_GeomFromText(?, ?, 'axis-order=long-lat')) $suffix", "8.0")
             ->postgres("$gisFunction(\"$geometryColumn\", ST_GeomFromText(?, ?)) $suffix");
@@ -36,6 +37,6 @@ class SpatialExpression extends Expression
 
     public function withBindings(array $bindings)
     {
-        return new ExpressionWithBindings($this->value, $bindings);
+        return new SpatialExpressionWithBindings($this->value, $bindings);
     }
 }

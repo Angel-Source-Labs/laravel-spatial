@@ -2,7 +2,7 @@
 
 namespace AngelSourceLabs\LaravelSpatial\Types;
 
-use AngelSourceLabs\LaravelExpressions\Database\Query\Expression\Grammar;
+use AngelSourceLabs\LaravelExpressions\Database\Query\Expression\ExpressionGrammar;
 use GeoIO\WKB\Parser\Parser;
 use GeoJson\GeoJson;
 use AngelSourceLabs\LaravelSpatial\Exceptions\UnknownWKTTypeException;
@@ -23,7 +23,7 @@ abstract class Geometry implements GeometryInterface, Jsonable, \JsonSerializabl
     protected $srid;
     
     /**
-     * @var Grammar
+     * @var ExpressionGrammar
      */
     protected $grammar;
 
@@ -158,7 +158,7 @@ abstract class Geometry implements GeometryInterface, Jsonable, \JsonSerializabl
 
     public function getValue()
     {
-        return $this->grammar = $this->grammar ?? Grammar::make()
+        return $this->grammar = $this->grammar ?? ExpressionGrammar::make()
                     ->mySql("ST_GeomFromText(?, ?)")
                     ->mySql("ST_GeomFromText(?, ?, 'axis-order=long-lat')", "8.0")
                     ->postgres("ST_GeomFromText(?, ?)");

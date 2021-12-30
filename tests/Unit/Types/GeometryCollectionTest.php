@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\Types;
 
-use AngelSourceLabs\LaravelExpressions\Database\Query\Expression\Grammar;
+use AngelSourceLabs\LaravelExpressions\Database\Query\Expression\ExpressionGrammar;
 use AngelSourceLabs\LaravelSpatial\Types\GeometryCollection;
 use AngelSourceLabs\LaravelSpatial\Types\GeometryInterface;
 use AngelSourceLabs\LaravelSpatial\Types\LineString;
@@ -59,9 +59,9 @@ class GeometryCollectionTest extends BaseTestCase
     public function testToWKTWithEmptyGeometryCollection()
     {
         $geometryCollection = (new GeometryCollection([]))->toWKT();
-        $this->assertInstanceOf(Grammar::class, $geometryCollection);
+        $this->assertInstanceOf(ExpressionGrammar::class, $geometryCollection);
 
-        /** @var Grammar $geometryCollection */
+        /** @var ExpressionGrammar $geometryCollection */
         $geometryCollection->driver('mysql')->version('5.7.1');
         $this->assertEquals('GEOMETRYCOLLECTION()', $geometryCollection);
 
