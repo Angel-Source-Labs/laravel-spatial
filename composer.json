@@ -13,13 +13,13 @@
             "name": "Brion Finlay"
         }
     ],
-    "disabled-repositories": [
+    "repositories": [
         {
             "type": "path",
             "url": "../laravel-expressions"
         }
     ],
-    "repositories": [
+    "disabled-repositories": [
         {
             "type": "vcs",
             "url": "https://gitlab.com/brionlab/laravel-expressions.git"
@@ -29,7 +29,7 @@
         "php": "^7.2.5|^8.0",
         "ext-pdo": "*",
         "ext-json": "*",
-        "angel-source-labs/laravel-expressions": "*",
+        "angel-source-labs/laravel-expressions": "dev-master",
         "doctrine/dbal": "^2.6|^3.0",
         "geo-io/wkb-parser": "^1.0",
         "jmikola/geojson": "^1.0",

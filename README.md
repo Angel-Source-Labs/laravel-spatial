@@ -1,56 +1,53 @@
-# Laravel MySQL Spatial extension
+# Spatial: GIS for Laravel
 
-[![Build Status](https://img.shields.io/travis/grimzy/laravel-mysql-spatial.svg?style=flat-square)](https://travis-ci.org/grimzy/laravel-mysql-spatial)
-[![Code Climate](https://img.shields.io/codeclimate/maintainability/grimzy/laravel-mysql-spatial.svg?style=flat-square)](https://codeclimate.com/github/grimzy/laravel-mysql-spatial/maintainability)
-[![Code Climate](https://img.shields.io/codeclimate/c/grimzy/laravel-mysql-spatial.svg?style=flat-square&colorB=4BCA2A)](https://codeclimate.com/github/grimzy/laravel-mysql-spatial/test_coverage) [![Packagist](https://img.shields.io/packagist/v/grimzy/laravel-mysql-spatial.svg?style=flat-square)](https://packagist.org/packages/grimzy/laravel-mysql-spatial)
-[![Packagist](https://img.shields.io/packagist/dt/grimzy/laravel-mysql-spatial.svg?style=flat-square)](https://packagist.org/packages/grimzy/laravel-mysql-spatial) [![StyleCI](https://github.styleci.io/repos/83766141/shield?branch=master)](https://github.styleci.io/repos/83766141) 
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)](LICENSE)
 
-Laravel package to easily work with [MySQL Spatial Data Types](https://dev.mysql.com/doc/refman/8.0/en/spatial-type-overview.html) and [MySQL Spatial Functions](https://dev.mysql.com/doc/refman/8.0/en/spatial-function-reference.html).
+Laravel package to easily work with GIS data types in PostGIS, MySQL 5.7, and MySQL 8.
 
-Please check the documentation for your MySQL version. MySQL's Extension for Spatial Data was added in MySQL 5.5 but many Spatial Functions were changed in 5.6 and 5.7.
+[MySQL Spatial Data Types](https://dev.mysql.com/doc/refman/8.0/en/spatial-type-overview.html) and [MySQL Spatial Functions](https://dev.mysql.com/doc/refman/8.0/en/spatial-function-reference.html).
 
-**Versions**
+## Supported Compatibiltiy
+### Laravel
+This package is tested against the following Laravel versions:
+* Laravel 6.x
+* Laravel 7.x
+* Laravel 8.x
 
-- `1.x.x`: MySQL 5.6 (also supports MySQL 5.5 but not all spatial analysis functions)
-- `2.x.x`: MySQL 5.7
-- `3.x.x`: MySQL 8.0 with SRID support (Laravel version < 8.0)
-- **`4.x.x`: MySQL 8.0 with SRID support (Laravel 8+) [Current branch]**
+### Databases
+This package is tested against the following Databases
+* PostGIS
+* MySQL 5.7
+* MySQL 8.x
 
-This package also works with MariaDB. Please refer to the [MySQL/MariaDB Spatial Support Matrix](https://mariadb.com/kb/en/library/mysqlmariadb-spatial-support-matrix/) for compatibility.
+#### Future
+Support for these databases may be available in a future release.  This package has been designed to support these databases but the work is not complete.
+* SQLServer
+* SQLite
 
+## History and Motivation
+We really like the [grimzy/laravel-mysql-spatial](https://github.com/grimzy/laravel-mysql-spatial) Laravel Eloquent API and we wanted to also be able to use Postgis.  (See [issue 137](https://github.com/grimzy/laravel-mysql-spatial/issues/137)).
+The goal of this package is to provide an API compatible with the [grimzy/laravel-mysql-spatial](https://github.com/grimzy/laravel-mysql-spatial) package that also supports postgis and additional database drivers.
+
+This package is a fork and substantial refactoring of `grimzy/laravel-mysql-spatial`:
+* refactored to use `laravel-expressions` to provide database compatibility across postgis, mysql 8, and mysql 5.7 
+* refactored to use `orchestra/testbench` in PHPUnit tests
+* PHPUnit tests updated to use PHPUnit 9.x versus PHPUnit 6.x
+
+Historically, `grimzy/laravel-mysql-spatial` was itself a fork of `njbarrett/laravel-postgis`, which is now `mstaack/laravel-postgis`.  These `laravel-postgis` pacakges provide access to postgis but do not provide the Laravel Eloquent Spatial analysis functions which were added by `grimzy/laravel-mysql-spatial`.
+* March 2015: [phaza/laravel-postgres](https://github.com/phaza/laravel-postgres) Peter Haza
+  * May 2016: [njbarrett/laravel-postgis](njbarrett/laravel-postgis) Nick Barrett
+    * March 2017: [grimzy/laravel-mysql-spatial](https://github.com/grimzy/laravel-mysql-spatial) Joseph Estefane
+      * Feb 2022: (this package) [Angel-Source-Labs/laravel-spatial](https://github.com/Angel-Source-Labs/laravel-spatial) Brion Finlay
+    * March 2020: [mstaack/laravel-postgis](https://github.com/mstaack/laravel-postgis) Max Staack
+
+**TODO: fork?**
+    
 ## Installation
 
 Add the package using composer:
 
 ```sh
-$ composer require grimzy/laravel-mysql-spatial:^4.0
-
-# or for Laravel version < 8.0
-$ composer require grimzy/laravel-mysql-spatial:^3.0
-```
-
-For MySQL 5.7:
-
-```shell
-$ composer require grimzy/laravel-mysql-spatial:^2.0
-```
-
-For MySQL 5.6 and 5.5:
-
-```shell
-$ composer require grimzy/laravel-mysql-spatial:^1.0
-```
-
-For Laravel versions before 5.5 or if not using auto-discovery, register the service provider in `config/app.php`:
-
-```php
-'providers' => [
-  /*
-   * Package Service Providers...
-   */
-  Grimzy\LaravelMysqlSpatial\SpatialServiceProvider::class,
-],
+$ composer require angel-source-labs/laravel-spatial
 ```
 
 ## Quickstart
@@ -63,7 +60,9 @@ From the command line:
 php artisan make:migration create_places_table
 ```
 
-Then edit the migration you just created by adding at least one spatial data field. For Laravel versions prior to 5.5, you can use the Blueprint provided by this package (Grimzy\LaravelMysqlSpatial\Schema\Blueprint):
+Then edit the migration you just created by adding at least one spatial data field. 
+
+**TODO: examples for postgis with SRID and geometry vs geography**
 
 ```php
 use Illuminate\Database\Migrations\Migration;
@@ -132,17 +131,17 @@ From the command line:
 php artisan make:model Place
 ```
 
-Then edit the model you just created. It must use the `SpatialTrait` and define an array called `$spatialFields` with the name of the MySQL Spatial Data field(s) created in the migration:
+Then edit the model you just created. It must use the `SpatialTrait` and define an array called `$spatialFields` with the name of the spatial data field(s) created in the migration:
 
 ```php
 namespace App;
 
+use AngelSourceLabs\LaravelSpatial\Eloquent\SpatialTrait;
 use Illuminate\Database\Eloquent\Model;
-use Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait;
 
 /**
- * @property \Grimzy\LaravelMysqlSpatial\Types\Point   $location
- * @property \Grimzy\LaravelMysqlSpatial\Types\Polygon $area
+ * @property \AngelSourceLabs\LaravelSpatial\Types\Point   $location
+ * @property \AngelSourceLabs\LaravelSpatial\Types\Polygon $area
  */
 class Place extends Model
 {
@@ -162,9 +161,11 @@ class Place extends Model
 ### Saving a model
 
 ```php
-use Grimzy\LaravelMysqlSpatial\Types\Point;
-use Grimzy\LaravelMysqlSpatial\Types\Polygon;
-use Grimzy\LaravelMysqlSpatial\Types\LineString;
+
+
+use AngelSourceLabs\LaravelSpatial\Types\LineString;
+use AngelSourceLabs\LaravelSpatial\Types\Point;
+use AngelSourceLabs\LaravelSpatial\Types\Polygon;
 
 $place1 = new Place();
 $place1->name = 'Empire State Building';
@@ -187,9 +188,9 @@ $place1->save();
 Or if your database fields were created with a specific SRID:
 
 ```php
-use Grimzy\LaravelMysqlSpatial\Types\Point;
-use Grimzy\LaravelMysqlSpatial\Types\Polygon;
-use Grimzy\LaravelMysqlSpatial\Types\LineString;
+use AngelSourceLabs\LaravelSpatial\Types\LineString;
+use AngelSourceLabs\LaravelSpatial\Types\Point;
+use AngelSourceLabs\LaravelSpatial\Types\Polygon;
 
 $place1 = new Place();
 $place1->name = 'Empire State Building';
@@ -239,7 +240,7 @@ Check out the [Class diagram](https://user-images.githubusercontent.com/1837678/
 
 ### Using Geometry classes
 
-In order for your Eloquent Model to handle the Geometry classes, it must use the `Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait` trait and define a `protected` property `$spatialFields`  as an array of MySQL Spatial Data Type column names (example in [Quickstart](#user-content-create-a-model)).
+In order for your Eloquent Model to handle the Geometry classes, it must use the `AngelSourceLabs\LaravelSpatial\Eloquent\SpatialTrait` trait and define a `protected` property `$spatialFields`  as an array of spatial data type column names (example in [Quickstart](#user-content-create-a-model)).
 
 #### IteratorAggregate and ArrayAccess
 
@@ -333,15 +334,18 @@ Available scopes:
 - `orderByDistance($geometryColumn, $geometry, $direction = 'asc')`
 - `orderByDistanceSphere($geometryColumn, $geometry, $direction = 'asc')`
 
-*Note that behavior and availability of MySQL spatial analysis functions differs in each MySQL version (cf. [documentation](https://dev.mysql.com/doc/refman/8.0/en/spatial-function-reference.html)).*
+**TODO: update with postgis**
+
+*Note that behavior and availability of spatial analysis functions differs in each database and database version (cf. [documentation](https://dev.mysql.com/doc/refman/8.0/en/spatial-function-reference.html)).*
 
 ## Migrations
 
 For Laravel versions prior to 5.5, you can use the Blueprint provided with this package: `Grimzy\LaravelMysqlSpatial\Schema\Blueprint`.
 
 ```php
+use AngelSourceLabs\LaravelSpatial\Schema\SpatialBlueprint;
 use Illuminate\Database\Migrations\Migration;
-use Grimzy\LaravelMysqlSpatial\Schema\Blueprint;
+
 
 class CreatePlacesTable extends Migration {
     // ...
@@ -349,6 +353,8 @@ class CreatePlacesTable extends Migration {
 ```
 
 ### Columns
+
+**TODO: update with postgis generic**
 
 Available [MySQL Spatial Types](https://dev.mysql.com/doc/refman/8.0/en/spatial-type-overview.html) migration blueprints:
 

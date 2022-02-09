@@ -151,6 +151,11 @@ abstract class Geometry implements GeometryInterface, Jsonable, \JsonSerializabl
         return json_encode($this, $options);
     }
 
+    public function hasBindings(): bool
+    {
+        return true;
+    }
+
     public function getBindings(): array
     {
         return [$this->toWKT(), $this->getSrid()];

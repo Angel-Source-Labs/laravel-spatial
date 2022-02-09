@@ -2,10 +2,8 @@
 
 namespace AngelSourceLabs\LaravelSpatial\Eloquent;
 
+use AngelSourceLabs\LaravelExpressions\Database\Query\Expression\Expression;
 use AngelSourceLabs\LaravelExpressions\Database\Query\Expression\ExpressionGrammar;
-use AngelSourceLabs\LaravelExpressions\Database\Query\Expression\ExpressionWithBindings;
-
-use Illuminate\Database\Query\Expression;
 
 class SpatialExpression extends Expression
 {
@@ -37,6 +35,7 @@ class SpatialExpression extends Expression
 
     public function withBindings(array $bindings)
     {
-        return new SpatialExpressionWithBindings($this->value, $bindings);
+        $this->bindings = $bindings;
+        return $this;
     }
 }

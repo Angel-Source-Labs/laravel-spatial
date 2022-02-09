@@ -14,13 +14,6 @@ class MySqlGrammar extends IlluminateMySqlGrammar
 {
     const COLUMN_MODIFIER_SRID = 'Srid';
 
-//    public function __construct()
-//    {
-//
-//
-//
-//    }
-
     public function compileCreate(Blueprint $blueprint, Fluent $command, Connection $connection)
     {
         $databasePlatform = $connection->getDoctrineConnection()->getDatabasePlatform();
