@@ -2,6 +2,8 @@
     "name": "angel-source-labs/laravel-spatial",
     "description": "Spatial data types extension for Laravel.",
     "scripts": {
+        "docker": "docker-compose -f docker-compose.yml up -d",
+        "docker:down": "docker-compose -f docker-compose.yml down",
         "test": "phpunit -c phpunit.xml.dist",
         "test:unit": "phpunit -c phpunit.xml.dist --testsuite unit",
         "test:integration": "phpunit -c phpunit.xml.dist --testsuite integration"

@@ -40,7 +40,7 @@ trait DatabaseConnections
         $app['config']->set('database.connections.pgsql.port', env('DB_PORT', '54322'));
         $app['config']->set('database.connections.pgsql.database', env('DB_DATABASE', 'spatial_test'));
         $app['config']->set('database.connections.pgsql.username', env('DB_USERNAME', 'postgres'));
-        $app['config']->set('database.connections.pgsql.password', env('DB_PASSWORD', ''));
+        $app['config']->set('database.connections.pgsql.password', env('DB_PASSWORD', 'password'));
     }
 
     protected function useSQLiteConnection($app)

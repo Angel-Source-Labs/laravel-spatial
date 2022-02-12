@@ -1,4 +1,4 @@
-# Spatial: GIS for Laravel
+# Spatial: GIS Spatial Extensions for Laravel
 
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)](LICENSE)
 
@@ -41,8 +41,6 @@ Historically, `grimzy/laravel-mysql-spatial` was itself a fork of `njbarrett/lar
       * Feb 2022: (this package) [Angel-Source-Labs/laravel-spatial](https://github.com/Angel-Source-Labs/laravel-spatial) Brion Finlay
     * March 2020: [mstaack/laravel-postgis](https://github.com/mstaack/laravel-postgis) Max Staack
 
-**TODO: fork?**
-    
 ## Installation
 
 Add the package using composer:
@@ -67,10 +65,9 @@ Then edit the migration you just created by adding at least one spatial data fie
 
 ```php
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+// use SpatialBlueprint for Spatial features and for proper code completion
+use AngelSourceLabs\LaravelSpatial\Schema\SpatialBlueprint as Blueprint;
 
-// For Laravel < 5.5
-// use Grimzy\LaravelMysqlSpatial\Schema\Blueprint;
 
 class CreatePlacesTable extends Migration {
 
@@ -94,16 +91,28 @@ class CreatePlacesTable extends Migration {
   
         // Or create the spatial fields with an SRID (e.g. 4326 WGS84 spheroid)
   
-        // Schema::create('places', function(Blueprint $table)
-        // {
-        //     $table->increments('id');
-        //     $table->string('name')->unique();
-        //     // Add a Point spatial data field named location with SRID 4326
-        //     $table->point('location', 4326)->nullable();
-        //     // Add a Polygon spatial data field named area with SRID 4326
-        //     $table->polygon('area', 4326)->nullable();
-        //     $table->timestamps();
-        // });
+         Schema::create('places_with_srid', function(Blueprint $table)
+         {
+             $table->increments('id');
+             $table->string('name')->unique();
+             // Add a Point spatial data field named location with SRID 4326
+             $table->point('location', 4326)->nullable();
+             // Add a Polygon spatial data field named area with SRID 4326
+             $table->polygon('area', 4326)->nullable();
+             $table->timestamps();
+         });
+         
+         // In Postgis, you can also create spatial fields that are Geography types instead of Geometry types
+          Schema::create('places_with_geography', function(Blueprint $table)
+         {
+             $table->increments('id');
+             $table->string('name')->unique();
+             // Add a Point spatial data field named location with SRID 4326
+             $table->point('location', 4326, Blueprint::GEOGRAPHY)->nullable();
+             // Add a Polygon spatial data field named area with SRID 4326
+             $table->polygon('area', 4326, Blueprint::GEOGRAPHY)->nullable();
+             $table->timestamps();
+         });        
     }
 
     /**
@@ -237,7 +246,47 @@ $lng = $place2->location->getLng();	// -73.9878441
 | `MultiPolygon(Polygon[], $srid = 0)`                         | [MultiPolygon](https://dev.mysql.com/doc/refman/8.0/en/gis-class-multipolygon.html) |
 | `GeometryCollection(Geometry[], $srid = 0)`                  | [GeometryCollection](https://dev.mysql.com/doc/refman/8.0/en/gis-class-geometrycollection.html) |
 
-Check out the [Class diagram](https://user-images.githubusercontent.com/1837678/30788608-a5afd894-a16c-11e7-9a51-0a08b331d4c4.png).
+**TODO PLANTUML with github proxy**
+
+```plantuml
+@startuml
+interface GeometryInterface
+interface Jsonable
+Interface JsonSerializable
+interface Arrayable
+interface IteratorAggregate
+Interface Countable
+Interface ArrayAccess
+abstract Class Geometry
+Class GeometryCollection
+Class Point
+abstract Class PointCollection
+Class MultiLineString
+Class MultiPolygon
+Class MultiPoint
+Class LineString
+Class Polygon
+
+Jsonable <|.. Geometry
+JsonSerializable <|.. Geometry
+GeometryInterface <|.. Geometry 
+  Geometry <|-- Point
+  Geometry <|-- GeometryCollection
+    Arrayable <|.. GeometryCollection
+    IteratorAggregate <|.. GeometryCollection
+    Countable  <|.. GeometryCollection
+    ArrayAccess  <|.. GeometryCollection
+      GeometryCollection <|-- PointCollection
+        PointCollection <|-- MultiPoint
+        PointCollection <|-- LineString
+      GeometryCollection <|-- MultiLineString
+        MultiLineString <|-- Polygon  
+      GeometryCollection <|-- MultiPolygon
+
+
+
+
+```
 
 ### Using Geometry classes
 
@@ -341,8 +390,6 @@ Available scopes:
 
 ## Migrations
 
-For Laravel versions prior to 5.5, you can use the Blueprint provided with this package: `Grimzy\LaravelMysqlSpatial\Schema\Blueprint`.
-
 ```php
 use AngelSourceLabs\LaravelSpatial\Schema\SpatialBlueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -436,7 +483,11 @@ class UpdatePlacesTable extends Migration
 ```
 
 ## Tests
-
+Start MySQL 5.7, MySQL8, Postgis Docker containers for tests.
+```shell
+$ composer docker
+```
+run tests.  Unit tests can be run without the database server docker containers.
 ```shell
 $ composer test
 # or 

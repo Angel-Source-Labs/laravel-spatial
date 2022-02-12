@@ -1,12 +1,9 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Integration;
 
 use AngelSourceLabs\LaravelSpatial\Schema\MySqlBuilder;
 use Illuminate\Support\Facades\DB;
-use Orchestra\Testbench\TestCase;
-use Tests\Integration\IntegrationBaseTestCase;
-use Tests\Unit\Stubs\PDOStub;
 
 class MysqlConnectionTest extends IntegrationBaseTestCase
 {

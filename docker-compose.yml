@@ -1,6 +1,7 @@
 version: '3.3'
 services:
   mysql57:
+      platform: linux/amd64
       image: mysql:5.7
       ports:
         - "33067:3306"
@@ -9,6 +10,7 @@ services:
         MYSQL_ROOT_PASSWORD: ''
         MYSQL_ALLOW_EMPTY_PASSWORD: 1
   mysql80:
+    platform: linux/amd64
     image: mysql:8.0
     ports:
       - "33068:3306"
@@ -17,6 +19,7 @@ services:
       MYSQL_ROOT_PASSWORD: ''
       MYSQL_ALLOW_EMPTY_PASSWORD: 1
   postgis:
+    platform: linux/amd64
     image: postgis/postgis:12-master
     ports:
       - "54322:5432"
