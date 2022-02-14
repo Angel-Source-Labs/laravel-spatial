@@ -1,8 +1,10 @@
 <?php
 
 
-namespace Tests\Integration;
+namespace Tests\Integration\Mysql\Mysql;
 
+
+use Tests\Integration\SpatialTest;
 
 class SpatialMysql57Test extends SpatialTest
 {

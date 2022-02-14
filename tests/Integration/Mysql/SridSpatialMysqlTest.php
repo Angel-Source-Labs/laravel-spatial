@@ -1,12 +1,13 @@
 <?php
 
 
-namespace Tests\Integration;
+namespace Tests\Integration\Mysql;
 
 
 use Illuminate\Database\QueryException;
+use Tests\Integration\SridSpatialTest;
 
-class SridSpatialMysqlTest extends SridSpatialTest
+abstract class SridSpatialMysqlTest extends SridSpatialTest
 {
     public function getEnvironmentSetUp($app)
     {

@@ -6,7 +6,7 @@ namespace Tests\Integration;
 
 use Illuminate\Database\QueryException;
 
-class SridSpatialPostgisTest extends SridSpatialTest
+class SridSpatialPostgis12Test extends SridSpatialTest
 {
     public function getEnvironmentSetUp($app)
     {

@@ -4,7 +4,7 @@
 namespace Tests\Integration;
 
 
-class SpatialPostgisTest extends SpatialTest
+class SpatialPostgis12Test extends SpatialTest
 {
     public function getEnvironmentSetUp($app)
     {

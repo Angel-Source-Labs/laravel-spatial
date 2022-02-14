@@ -32,6 +32,30 @@ trait DatabaseConnections
         $app['config']->set('database.connections.mysql.port', env('DB_PORT', '33067'));
     }
 
+    public function usePercona57Connection($app)
+    {
+        $this->useMySqlConnection($app);
+        $app['config']->set('database.connections.mysql.port', env('DB_PORT', '33167'));
+    }
+
+    public function usePerconaConnection($app)
+    {
+        $this->useMySqlConnection($app);
+        $app['config']->set('database.connections.mysql.port', env('DB_PORT', '33168'));
+    }
+
+    public function useMariaDBConnection($app)
+    {
+        $this->useMySqlConnection($app);
+        $app['config']->set('database.connections.mysql.port', env('DB_PORT', '33107'));
+    }
+
+    public function useMariaDB102Connection($app)
+    {
+        $this->useMySqlConnection($app);
+        $app['config']->set('database.connections.mysql.port', env('DB_PORT', '33102'));
+    }
+
     public function usePostgresConnection($app)
     {
         $this->dbDriver = 'pgsql';

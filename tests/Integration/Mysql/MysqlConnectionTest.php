@@ -1,11 +1,12 @@
 <?php
 
-namespace Tests\Integration;
+namespace Tests\Integration\Mysql;
 
 use AngelSourceLabs\LaravelSpatial\Schema\MySqlBuilder;
 use Illuminate\Support\Facades\DB;
+use Tests\Integration\IntegrationBaseTestCase;
 
-class MysqlConnectionTest extends IntegrationBaseTestCase
+abstract class MysqlConnectionTest extends IntegrationBaseTestCase
 {
     public function getEnvironmentSetUp($app)
     {

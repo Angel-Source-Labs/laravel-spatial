@@ -18,6 +18,42 @@ services:
       MYSQL_DATABASE: 'spatial_test'
       MYSQL_ROOT_PASSWORD: ''
       MYSQL_ALLOW_EMPTY_PASSWORD: 1
+  percona57:
+    platform: linux/amd64
+    image: percona:5.7
+    ports:
+      - "33167:3306"
+    environment:
+      MYSQL_DATABASE: 'spatial_test'
+      MYSQL_ROOT_PASSWORD: ''
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+  percona80:
+    platform: linux/amd64
+    image: percona:8.0
+    ports:
+      - "33168:3306"
+    environment:
+      MYSQL_DATABASE: 'spatial_test'
+      MYSQL_ROOT_PASSWORD: ''
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+  mariadb102:
+    platform: linux/amd64
+    image: mariadb:10.2
+    ports:
+      - "33102:3306"
+    environment:
+      MYSQL_DATABASE: 'spatial_test'
+      MYSQL_ROOT_PASSWORD: ''
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+  mariadb107:
+    platform: linux/amd64
+    image: mariadb:10.7
+    ports:
+      - "33107:3306"
+    environment:
+      MYSQL_DATABASE: 'spatial_test'
+      MYSQL_ROOT_PASSWORD: ''
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
   postgis:
     platform: linux/amd64
     image: postgis/postgis:12-master
