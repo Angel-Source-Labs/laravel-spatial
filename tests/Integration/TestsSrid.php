@@ -13,6 +13,12 @@ use Tests\Integration\Models\WithSridModel;
 
 trait TestsSrid
 {
+    public $wrongSridExceptionMessage = null;
+    public function setWrongSridExceptionMessage($message)
+    {
+        $this->wrongSridExceptionMessage = $message;
+    }
+
     public function testInsertPointWithSrid()
     {
         $geo = new WithSridModel();
@@ -106,7 +112,7 @@ trait TestsSrid
         $geo = new WithSridModel();
         $geo->location = new Point(1, 2, 4326);
 
-        $this->assertException(QueryException::class);
+        $this->assertException(QueryException::class, $this->wrongSridExceptionMessage);
         $geo->save();
 
         // SQLSTATE[22023]: Invalid parameter value: 7 ERROR:  Geometry SRID (4326) does not match column SRID (3857) (SQL: insert into "with_srid" ("location") values (ST_GeomFromText(POINT(2 1), 4326)) returning "id")

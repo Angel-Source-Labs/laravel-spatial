@@ -3,6 +3,7 @@
 namespace Tests\Integration;
 
 use AngelSourceLabs\LaravelExpressions\ExpressionsServiceProvider;
+use AngelSourceLabs\LaravelSpatial\Schema\MySqlBuilder;
 use AngelSourceLabs\LaravelSpatial\SpatialServiceProvider;
 use Illuminate\Support\Facades\DB;
 use Orchestra\Testbench\TestCase;
@@ -10,6 +11,9 @@ use Orchestra\Testbench\TestCase;
 abstract class IntegrationBaseTestCase extends TestCase
 {
     use DatabaseConnections;
+
+//    public $expectedSchemaBuilder = null;
+//    public $wrongSridExceptionMessage = null;
 
     protected $after_fix = false;
     protected $migrations = [];
