@@ -5,7 +5,6 @@ namespace Tests\Integration\Mysql;
 use AngelSourceLabs\LaravelSpatial\Schema\MySqlBuilder;
 use Tests\Integration\IntegrationBaseTestCase;
 use Tests\Integration\TestsMySql80Migration;
-use Tests\Integration\TestsMySqlSridMigration;
 use Tests\Integration\TestsSchemaBuilder;
 use Tests\Integration\TestsSpatialMethods;
 use Tests\Integration\TestsSrid;
@@ -15,8 +14,7 @@ abstract class Mysql80IntegrationBaseTestCase extends IntegrationBaseTestCase
     use TestsSchemaBuilder,
         TestsSpatialMethods,
         TestsMySql80Migration,
-        TestsSrid,
-        TestsMySqlSridMigration;
+        TestsSrid;
 
     public function setUp(): void
     {
