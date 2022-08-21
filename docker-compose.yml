@@ -56,9 +56,18 @@ services:
       MYSQL_ALLOW_EMPTY_PASSWORD: 1
   postgis:
     platform: linux/amd64
-    image: postgis/postgis:12-master
+    image: postgis/postgis:14-master
     ports:
-      - "54322:5432"
+      - "54314:5432"
+    environment:
+      POSTGRES_DB: 'spatial_test'
+      POSTGRES_PASSWORD: 'password'
+#      POSTGRES_HOST_AUTH_METHOD: 'trust'
+  postgis10:
+    platform: linux/amd64
+    image: postgis/postgis:10-2.5
+    ports:
+      - "54310:5432"
     environment:
       POSTGRES_DB: 'spatial_test'
       POSTGRES_PASSWORD: 'password'

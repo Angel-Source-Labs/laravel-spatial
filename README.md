@@ -4,8 +4,6 @@
 
 Laravel package to easily work with GIS data types in PostGIS, MySQL 5.7, and MySQL 8.
 
-[MySQL Spatial Data Types](https://dev.mysql.com/doc/refman/8.0/en/spatial-type-overview.html) and [MySQL Spatial Functions](https://dev.mysql.com/doc/refman/8.0/en/spatial-function-reference.html).
-
 ## Supported Compatibiltiy
 ### Laravel
 This package is tested against the following Laravel versions:
@@ -16,9 +14,15 @@ This package is tested against the following Laravel versions:
 
 ### Databases
 This package is tested against the following Databases
-* PostGIS
-* MySQL 5.7
-* MySQL 8.x
+
+| Database            | Platform    | SRID Supported | Geography Type Supported |
+|---------------------|-------------|----------------|--------------------------|
+| PostGIS 10.x - 14.x | Postgres 10 | Yes            | Yes                      |
+| MySQL 5.7           | MySQL 5.7   | No             | No                       |
+| MySQL 8.x           | MySQL 8     | Yes            | No                       |
+| Percona 5.7         | MySQL 5.7   | No             | No                       |
+| Percona 8.x         | MySQL 8     | Yes            | No                       |
+| MariaDB 10.2 - 10.7 | MySQL 5.7   | No             | No                       |
 
 #### Future
 Support for these databases may be available in a future release.  This package has been designed to support these databases but the work is not complete.
@@ -60,8 +64,6 @@ php artisan make:migration create_places_table
 ```
 
 Then edit the migration you just created by adding at least one spatial data field. 
-
-**TODO: examples for postgis with SRID and geometry vs geography**
 
 ```php
 use Illuminate\Database\Migrations\Migration;
@@ -236,17 +238,15 @@ $lng = $place2->location->getLng();	// -73.9878441
 
 ### Available Geometry classes
 
-| Grimzy\LaravelMysqlSpatial\Types                             | OpenGIS Class                                                |
-| ------------------------------------------------------------ | ------------------------------------------------------------ |
-| `Point($lat, $lng, $srid = 0)`                               | [Point](https://dev.mysql.com/doc/refman/8.0/en/gis-class-point.html) |
-| `MultiPoint(Point[], $srid = 0)`                             | [MultiPoint](https://dev.mysql.com/doc/refman/8.0/en/gis-class-multipoint.html) |
-| `LineString(Point[], $srid = 0)`                             | [LineString](https://dev.mysql.com/doc/refman/8.0/en/gis-class-linestring.html) |
-| `MultiLineString(LineString[], $srid = 0)`                   | [MultiLineString](https://dev.mysql.com/doc/refman/8.0/en/gis-class-multilinestring.html) |
+| AngelSourceLabs\LaravelSpatial\Doctrine\Types                                                                                  | OpenGIS Class                                                |
+|----------------------------------------------------------------------------------------------------------------------------------------| ------------------------------------------------------------ |
+| `Point($lat, $lng, $srid = 0)`                                                                                                         | [Point](https://dev.mysql.com/doc/refman/8.0/en/gis-class-point.html) |
+| `MultiPoint(Point[], $srid = 0)`                                                                                                       | [MultiPoint](https://dev.mysql.com/doc/refman/8.0/en/gis-class-multipoint.html) |
+| `LineString(Point[], $srid = 0)`                                                                                                       | [LineString](https://dev.mysql.com/doc/refman/8.0/en/gis-class-linestring.html) |
+| `MultiLineString(LineString[], $srid = 0)`                                                                                             | [MultiLineString](https://dev.mysql.com/doc/refman/8.0/en/gis-class-multilinestring.html) |
 | `Polygon(LineString[], $srid = 0)` *([exterior and interior boundaries](https://dev.mysql.com/doc/refman/8.0/en/gis-class-polygon.html))* | [Polygon](https://dev.mysql.com/doc/refman/8.0/en/gis-class-polygon.html) |
-| `MultiPolygon(Polygon[], $srid = 0)`                         | [MultiPolygon](https://dev.mysql.com/doc/refman/8.0/en/gis-class-multipolygon.html) |
-| `GeometryCollection(Geometry[], $srid = 0)`                  | [GeometryCollection](https://dev.mysql.com/doc/refman/8.0/en/gis-class-geometrycollection.html) |
-
-**TODO PLANTUML with github proxy**
+| `MultiPolygon(Polygon[], $srid = 0)`                                                                                                   | [MultiPolygon](https://dev.mysql.com/doc/refman/8.0/en/gis-class-multipolygon.html) |
+| `GeometryCollection(Geometry[], $srid = 0)`                                                                                            | [GeometryCollection](https://dev.mysql.com/doc/refman/8.0/en/gis-class-geometrycollection.html) |
 
 ```plantuml
 @startuml
@@ -384,9 +384,13 @@ Available scopes:
 - `orderByDistance($geometryColumn, $geometry, $direction = 'asc')`
 - `orderByDistanceSphere($geometryColumn, $geometry, $direction = 'asc')`
 
-**TODO: update with postgis**
+*Note that behavior and availability of spatial analysis functions differs in each database and database version.*
 
-*Note that behavior and availability of spatial analysis functions differs in each database and database version (cf. [documentation](https://dev.mysql.com/doc/refman/8.0/en/spatial-function-reference.html)).*
+Spatial function references:
+* [MySQL 5.7 Spatial Functions](https://dev.mysql.com/doc/refman/5.7/en/spatial-function-reference.html)
+* [MySQL 8.x Spatial Functions](https://dev.mysql.com/doc/refman/8.0/en/spatial-function-reference.html)
+* [PostGIS Spatial Functions](https://postgis.net/docs/reference.html#Spatial_Relationships)
+
 
 ## Migrations
 
@@ -402,9 +406,7 @@ class CreatePlacesTable extends Migration {
 
 ### Columns
 
-**TODO: update with postgis generic**
-
-Available [MySQL Spatial Types](https://dev.mysql.com/doc/refman/8.0/en/spatial-type-overview.html) migration blueprints:
+Available spatial type migration blueprints:
 
 - `$table->geometry(string $column_name, int $srid = 0)`
 - `$table->point(string $column_name, int $srid = 0)`
@@ -414,6 +416,11 @@ Available [MySQL Spatial Types](https://dev.mysql.com/doc/refman/8.0/en/spatial-
 - `$table->multiLineString(string $column_name, int $srid = 0)`
 - `$table->multiPolygon(string $column_name, int $srid = 0)`
 - `$table->geometryCollection(string $column_name, int $srid = 0)`
+
+Spatial type references:
+* [MySQL 5.7 Spatial Types](https://dev.mysql.com/doc/refman/5.7/en/spatial-type-overview.html)
+* [MySQL 8.x Spatial Types](https://dev.mysql.com/doc/refman/8.0/en/spatial-type-overview.html)
+* [PostGIS types](https://postgis.net/docs/reference.html#PostGIS_Types)
 
 ### Spatial indexes
 
@@ -426,7 +433,7 @@ Note about spatial indexes from the [MySQL documentation](https://dev.mysql.com/
 
 > For [`MyISAM`](https://dev.mysql.com/doc/refman/8.0/en/myisam-storage-engine.html) and (as of MySQL 5.7.5) `InnoDB` tables, MySQL can create spatial indexes using syntax similar to that for creating regular indexes, but using the `SPATIAL` keyword. Columns in spatial indexes must be declared `NOT NULL`.
 
-Also please read this [**important note**](https://laravel.com/docs/5.5/migrations#indexes) regarding Index Lengths in the Laravel 5.6 documentation.
+Also please read this [**important note**](https://laravel.com/docs/master/migrations#index-lengths-mysql-mariadb) regarding Index Lengths in the Laravel documentation.
 
 For example, as a follow up to the [Quickstart](#user-content-create-a-migration); from the command line, generate a new migration:
 
@@ -438,7 +445,7 @@ Then edit the migration file that you just created:
 
 ```php
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use AngelSourceLabs\LaravelSpatial\Schema\SpatialBlueprint as Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 class UpdatePlacesTable extends Migration
@@ -495,19 +502,12 @@ $ composer test:unit
 $ composer test:integration
 ```
 
-Integration tests require a running MySQL database. If you have Docker installed, you can start easily start one:
-
-```shell
-$ make start_db		# starts MySQL 8.0
-# or
-$ make start_db V=5.7	# starts MySQL 5.7
-```
-
 ## Contributing
 
-Recommendations and pull request are most welcome! Pull requests with tests are the best! There are still a lot of MySQL spatial functions to implement or creative ways to use spatial functions. 
+Recommendations and pull request are most welcome! Pull requests with tests are the best! There are still a lot of spatial functions to implement or creative ways to use spatial functions. 
 
 ## Credits
 
-Originally inspired from [njbarrett's Laravel postgis package](https://github.com/njbarrett/laravel-postgis).
+Originally inspired from [grimzy/laravel-mysql-spatial](https://github.com/grimzy/laravel-mysql-spatial) and 
+[njbarrett's Laravel postgis package](https://github.com/njbarrett/laravel-postgis).
 

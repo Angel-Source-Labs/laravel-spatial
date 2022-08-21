@@ -11,7 +11,7 @@ use Tests\Integration\TestsSchemaBuilder;
 use Tests\Integration\TestsSpatialMethods;
 use Tests\Integration\TestsSrid;
 
-class SpatialPostgis12Test extends IntegrationBaseTestCase
+class SpatialPostgis14Test extends IntegrationBaseTestCase
 {
     use TestsSchemaBuilder, TestsPostgisMigration, TestsSpatialMethods, TestsSrid;
 
