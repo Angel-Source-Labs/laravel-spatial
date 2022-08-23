@@ -166,6 +166,8 @@ abstract class Geometry implements GeometryInterface, Jsonable, \JsonSerializabl
         return $this->grammar = $this->grammar ?? ExpressionGrammar::make()
                     ->mySql("ST_GeomFromText(?, ?)")
                     ->mySql("ST_GeomFromText(?, ?, 'axis-order=long-lat')", "8.0")
+                    // Temporary fix for MariaDB
+                    ->mySql("ST_GeomFromText(?, ?)", "10.0")
                     ->postgres("ST_GeomFromText(?, ?)");
     }
 

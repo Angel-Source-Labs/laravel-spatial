@@ -12,6 +12,8 @@ class SpatialExpression extends Expression
         return ExpressionGrammar::make()
             ->mySql("$gisFunction(`$geometryColumn`, ST_GeomFromText(?, ?)) $suffix")
             ->mySql("$gisFunction(`$geometryColumn`, ST_GeomFromText(?, ?, 'axis-order=long-lat')) $suffix", "8.0")
+            // Temporary fix for MariaDB
+            ->mySql("$gisFunction(`$geometryColumn`, ST_GeomFromText(?, ?)) $suffix", "10.0")
             ->postgres("$gisFunction(\"$geometryColumn\", ST_GeomFromText(?, ?)) $suffix");
     }
 
