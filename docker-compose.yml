@@ -18,6 +18,8 @@ services:
       MYSQL_DATABASE: 'spatial_test'
       MYSQL_ROOT_PASSWORD: ''
       MYSQL_ALLOW_EMPTY_PASSWORD: 1
+    volumes:
+      - "./docker/custom.cnf:/etc/mysql/conf.d/custom.cnf"
   percona57:
     platform: linux/amd64
     image: percona:5.7
@@ -36,6 +38,8 @@ services:
       MYSQL_DATABASE: 'spatial_test'
       MYSQL_ROOT_PASSWORD: ''
       MYSQL_ALLOW_EMPTY_PASSWORD: 1
+    volumes:
+      - "./docker/percona80.cnf:/etc/my.cnf.d/custom.cnf"
   mariadb102:
     platform: linux/amd64
     image: mariadb:10.2

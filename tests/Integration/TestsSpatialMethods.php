@@ -222,7 +222,7 @@ trait TestsSpatialMethods
         $a = GeometryModel::distanceValue('location', $loc1->location)->get();
         $this->assertCount(2, $a);
         $this->assertEquals(0, $a[0]->distance);
-        $this->assertEquals(1.4142135623, $a[1]->distance); // PHP floats' 11th+ digits don't matter
+        $this->assertEqualsWithDelta(1.4142135623, $a[1]->distance, 0.0002); // PHP floats' 11th+ digits don't matter
     }
 
     public function testDistanceSphereValue()
