@@ -1,6 +1,7 @@
 # Spatial: GIS Spatial Extensions for Laravel
 
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)](LICENSE)
+[![PHPUnit tests](https://github.com/Angel-Source-Labs/laravel-spatial/actions/workflows/github-actions.yml/badge.svg?branch=main)](https://github.com/Angel-Source-Labs/laravel-spatial/actions/workflows/github-actions.yml)
 
 Laravel package to easily work with GIS data types in PostGIS, MySQL 5.7, and MySQL 8.
 
