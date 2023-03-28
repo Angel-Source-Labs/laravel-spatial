@@ -2,8 +2,8 @@
 
 namespace AngelSourceLabs\LaravelSpatial\Eloquent;
 
+use AngelSourceLabs\LaravelExpressionGrammar\ExpressionGrammar;
 use AngelSourceLabs\LaravelExpressions\Database\Query\Expression\Expression;
-use AngelSourceLabs\LaravelExpressions\Database\Query\Expression\ExpressionGrammar;
 
 class SpatialExpression extends Expression
 {

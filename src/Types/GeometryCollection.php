@@ -2,7 +2,7 @@
 
 namespace AngelSourceLabs\LaravelSpatial\Types;
 
-use AngelSourceLabs\LaravelExpressions\Database\Query\Expression\ExpressionGrammar;
+use AngelSourceLabs\LaravelExpressionGrammar\ExpressionGrammar;
 use ArrayAccess;
 use ArrayIterator;
 use Countable;

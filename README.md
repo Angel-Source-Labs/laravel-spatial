@@ -12,6 +12,7 @@ This package is tested against the following Laravel versions:
 * Laravel 7.x
 * Laravel 8.x
 * Laravel 9.x
+* Laravel 10.x
 
 ### Databases
 This package is tested against the following Databases

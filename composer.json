@@ -16,19 +16,19 @@
         }
     ],
     "require": {
-        "php": "^7.2.5|^8.0",
+        "php": ">=7.2.5",
         "ext-pdo": "*",
         "ext-json": "*",
-        "angel-source-labs/laravel-expressions": "^1.0",
+        "angel-source-labs/laravel-expressions": "^1.1",
         "doctrine/dbal": "^2.6|^3.0",
         "geo-io/wkb-parser": "^1.0",
         "jmikola/geojson": "^1.0",
-        "laravel/framework": "^6.0|^7.0|^8.0|^9.0"
+        "laravel/framework": ">=6.0"
     },
     "require-dev": {
         "mockery/mockery": "^1.4",
-        "orchestra/testbench": "^4.0|^5.0|^6.0|^7.0",
-        "phpunit/phpunit": "^9.0"
+        "orchestra/testbench": "*",
+        "composer/semver": "*"
     },
     "autoload": {
         "psr-4": {

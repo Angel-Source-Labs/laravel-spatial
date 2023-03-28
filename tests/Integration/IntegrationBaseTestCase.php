@@ -69,7 +69,7 @@ abstract class IntegrationBaseTestCase extends TestCase
     // MySQL 8.0.4 fixed bug #26941370 and bug #88031
     private function isMySQL8AfterFix()
     {
-        $results = DB::select(DB::raw('select version()'));
+        $results = DB::select('select version()');
         if ($this->dbDriver == "mysql") {
             $mysql_version = $results[0]->{'version()'}; // mysql
             return version_compare($mysql_version, '8.0.4', '>=');

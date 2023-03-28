@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\Types;
 
-use AngelSourceLabs\LaravelExpressions\Database\Query\Expression\ExpressionGrammar;
+use AngelSourceLabs\LaravelExpressionGrammar\ExpressionGrammar;
 use AngelSourceLabs\LaravelSpatial\Types\GeometryCollection;
 use AngelSourceLabs\LaravelSpatial\Types\GeometryInterface;
 use AngelSourceLabs\LaravelSpatial\Types\LineString;
