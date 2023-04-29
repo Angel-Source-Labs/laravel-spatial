@@ -21,6 +21,7 @@ use AngelSourceLabs\LaravelSpatial\Doctrine\Types\Point;
 use AngelSourceLabs\LaravelSpatial\Doctrine\Types\Polygon;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Schema\Grammars\PostgresGrammar;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class DatabaseServiceProvider.
@@ -125,7 +126,11 @@ class SpatialServiceProvider extends \Illuminate\Support\ServiceProvider
                  */
                 $connection = $resolver($pdo, $database, $tablePrefix, $config);
                 $connection->setSchemaGrammar(new $class['schemaGrammar']);
-                $this->registerGeometryTypes($connection);
+                try {
+                    $this->registerGeometryTypes($connection);
+                } catch (\Throwable $e) {
+                    Log::error("SpatialServiceProvider: $e");
+                }
 
                 return $connection;
             });
