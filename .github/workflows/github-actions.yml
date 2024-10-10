@@ -107,5 +107,5 @@ jobs:
       - name: List Database Containers
         run: docker compose ps
       - name: Run PHPUnit Unit Tests
-        run: vendor/bin/phpunit -c phpunit.xml.dist --cache-result-file=.phpunit.result.cache
+        run: vendor/bin/phpunit -c phpunit.xml.dist
 
