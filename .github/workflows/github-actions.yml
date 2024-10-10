@@ -96,16 +96,16 @@ jobs:
           max_attempts: 3
           retry_on: error
           timeout_minutes: 3
-          command: pwd;docker-compose up -d
+          command: pwd;docker compose up -d
       - name: List Database Containers
-        run: docker-compose ps
+        run: docker compose ps
       - name: Wait for MySQL
         run: |
           while ! mysqladmin ping --host=127.0.0.1 --port=33067 --silent; do
             sleep 1
           done
       - name: List Database Containers
-        run: docker-compose ps
+        run: docker compose ps
       - name: Run PHPUnit Unit Tests
-        run: vendor/bin/phpunit -c phpunit.xml.dist --cache-result-file=.phpunit.result.cache
+        run: vendor/bin/phpunit -c phpunit.xml.dist
 

@@ -4,4 +4,5 @@ composer.lock
 _db/
 build/
 .phpunit.result.cache
+.phpunit.cache
 .DS_store

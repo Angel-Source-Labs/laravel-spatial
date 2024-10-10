@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backupGlobals="false" bootstrap="./vendor/autoload.php" colors="true" processIsolation="false" stopOnFailure="false" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.0/phpunit.xsd" cacheDirectory=".phpunit.cache" backupStaticProperties="false">
-  <coverage>
-    <include>
-      <directory suffix=".php">./src</directory>
-    </include>
-    <report>
-      <clover outputFile="build/logs/clover.xml"/>
-    </report>
-  </coverage>
   <testsuites>
     <testsuite name="unit">
       <directory suffix="Test.php">./tests/Unit</directory>
@@ -17,17 +9,4 @@
     </testsuite>
   </testsuites>
   <logging/>
-  <php>
-    <!--        <env name="APP_ENV" value="testing"/>-->
-    <!--        <env name="APP_DEBUG" value="true"/>-->
-    <!--        <env name="APP_KEY" value="V4EYYl0MjI4Bin9GkFPUE3cpAARPCF27"/>-->
-    <!--        <env name="CACHE_DRIVER" value="array"/>-->
-    <!--        <env name="SESSION_DRIVER" value="array"/>-->
-    <!--        <env name="QUEUE_DRIVER" value="sync"/>-->
-    <!--        <env name="DB_DATABASE" value="spatial_test"/>-->
-    <!--        <env name="DB_HOST" value="127.0.0.1"/>-->
-    <!--        <env name="DB_PORT" value="3306"/>-->
-    <!--        <env name="DB_USERNAME" value="root"/>-->
-    <!--        <env name="DB_PASSWORD" value=""/>-->
-  </php>
 </phpunit>

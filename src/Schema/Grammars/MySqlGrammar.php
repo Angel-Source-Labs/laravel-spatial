@@ -45,8 +45,8 @@ class MySqlGrammar extends IlluminateMySqlGrammar
             $fullVersion = $connection->getPdo()->getAttribute(PDO::ATTR_SERVER_VERSION);
             $driverName = $connection->getDriverName();
 
-            $version = Str::of($fullVersion)->before('-');
-            $isMariaDB = Str::of($fullVersion)->contains('MariaDB');
+            $version = Str::before($fullVersion, '-');
+            $isMariaDB = Str::contains($fullVersion, 'MariaDB');
             $isSupported = $driverName === 'mysql' && !$isMariaDB && Semver::satisfies($version, '>=8.0');
 
             return $this->isMySql80Platform = $isSupported;

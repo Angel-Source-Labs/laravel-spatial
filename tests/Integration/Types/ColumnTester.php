@@ -243,7 +243,7 @@ class ColumnTester
     protected function compareDbalColumn(Column $column) : void
     {
         $columnAsArray = $column->toArray();
-        $columnAsArray["type"] = $column->getType()::class;
+        $columnAsArray["type"] = get_class($column->getType());
         $this->comparedColumn = $columnAsArray;
 
         $this->columnAsCompared = [

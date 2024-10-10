@@ -19,14 +19,14 @@
         "php": ">=7.3",
         "ext-pdo": "*",
         "ext-json": "*",
-        "angel-source-labs/laravel-expressions": "dev-test",
+        "angel-source-labs/laravel-expressions": "^1.0",
         "doctrine/dbal": "^2.6|^3.0",
         "geo-io/wkb-parser": "^1.0",
         "jmikola/geojson": "^1.0",
         "laravel/framework": ">=6.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^10.0",
+        "phpunit/phpunit": "*",
         "mockery/mockery": "^1.4",
         "orchestra/testbench": "*",
         "composer/semver": "*"
