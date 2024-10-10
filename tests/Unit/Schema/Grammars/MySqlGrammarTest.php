@@ -95,6 +95,9 @@ class MySqlGrammarTest extends BaseTestCase
     {
         $blueprint = new SpatialBlueprint('test');
         $blueprint->geometry('foo', 4326);
+
+        $connection = $this->getConnection();
+        $schemaGrammar = $connection->getSchemaGrammar();
         $statements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
 
         $this->assertEquals(1, count($statements));
@@ -181,14 +184,23 @@ class MySqlGrammarTest extends BaseTestCase
         $this->assertEquals(2, count($addStatements));
         $this->assertEquals('alter table `test` add spatial index `test_foo_spatialindex`(`foo`)', $addStatements[1]);
 
+        $blueprint = new SpatialBlueprint('test');
         $blueprint->dropSpatialIndex(['foo']);
         $blueprint->dropSpatialIndex('test_foo_spatialindex');
         $dropStatements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
 
+        // the difference here is that there are two "alter table `test` add `foo` POINT not null" statements in <= laravel 10.x and only one in laravel 11.x
+        // above when the add statements are checked there is only 1.
+        // when blueprint->toSql is rerun there are 2.
+        //
+        // two possible solutions:
+        // 1: create a new blueprint for the second check instead of reusing the original.
+        // 2: filter the output to get only the drop statements and verify that those are correct.
+
         $expectedSql = 'alter table `test` drop index `test_foo_spatialindex`';
-        $this->assertEquals(5, count($dropStatements));
-        $this->assertEquals($expectedSql, $dropStatements[3]);
-        $this->assertEquals($expectedSql, $dropStatements[4]);
+        $this->assertEquals(2, count($dropStatements));
+        $this->assertEquals($expectedSql, $dropStatements[0]);
+        $this->assertEquals($expectedSql, $dropStatements[1]);
     }
 
 //    protected function getConnection()

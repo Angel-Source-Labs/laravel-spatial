@@ -3,22 +3,24 @@
 namespace AngelSourceLabs\LaravelSpatial\Schema\Grammars;
 
 use AngelSourceLabs\LaravelSpatial\Schema\SpatialBlueprint;
-use Doctrine\DBAL\Platforms\AbstractPlatform;
-use Doctrine\DBAL\Platforms\MySQL57Platform;
-use Doctrine\DBAL\Platforms\MySQL80Platform;
+use Composer\Semver\Semver;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Schema\Grammars\MySqlGrammar as IlluminateMySqlGrammar;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Fluent;
+use Illuminate\Support\Str;
 use PDO;
 
 class MySqlGrammar extends IlluminateMySqlGrammar
 {
     const COLUMN_MODIFIER_SRID = 'Srid';
 
-    public function configureSridSupport(AbstractPlatform $databasePlatform)
+    public $isMySql80Platform = null;
+
+    public function configureSridSupport(Connection $connection = null)
     {
-        $sridSupported = $databasePlatform instanceof MySQL80Platform;
+        $sridSupported = $this->isMySQL80Platform($connection);
 
         if ( $sridSupported ) {
             // Enable SRID as a column modifier
@@ -35,14 +37,34 @@ class MySqlGrammar extends IlluminateMySqlGrammar
 
     }
 
+    public function isMySQL80Platform(Connection $connection = null)
+    {
+        if (is_null($this->isMySql80Platform)) {
+            $connection = $connection ?? $this->connection ?? ($this->connection = DB::connection());
+
+            $fullVersion = $connection->getPdo()->getAttribute(PDO::ATTR_SERVER_VERSION);
+            $driverName = $connection->getDriverName();
+
+            $version = Str::of($fullVersion)->before('-');
+            $isMariaDB = Str::of($fullVersion)->contains('MariaDB');
+            $isSupported = $driverName === 'mysql' && !$isMariaDB && Semver::satisfies($version, '>=8.0');
+
+            return $this->isMySql80Platform = $isSupported;
+        }
+
+        return $this->isMySql80Platform;
+    }
+
     public function compileCreate(Blueprint $blueprint, Fluent $command, Connection $connection)
     {
-        $databasePlatform = $connection->getDoctrineConnection()->getDatabasePlatform();
-        $version = $connection->getPdo()->getAttribute(PDO::ATTR_SERVER_VERSION);
-        $driverName = $connection->getDriverName();
-        $this->configureSridSupport($databasePlatform);
-
+        $this->configureSridSupport($connection);
         return parent::compileCreate($blueprint, $command, $connection);
+    }
+
+    protected function addModifiers($sql, Blueprint $blueprint, Fluent $column)
+    {
+        $this->configureSridSupport();
+        return parent::addModifiers($sql, $blueprint, $column);
     }
 
     /**

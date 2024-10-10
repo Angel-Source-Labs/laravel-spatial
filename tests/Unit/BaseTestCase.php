@@ -34,7 +34,16 @@ abstract class BaseTestCase extends TestCase
 
     public function tearDown(): void
     {
+        parent::tearDown();
         m::close();
+    }
+
+    protected function getEnvironmentSetUp($app)
+    {
+        parent::getEnvironmentSetUp($app);
+//        $traits = trait_uses_recursive($this);
+//        if (! isset($traits[DatabaseConnections::class]))
+            config(["database.default" => "mysql"]);
     }
 
     protected function assertException($exceptionName, $exceptionMessage = '', $exceptionCode = 0)

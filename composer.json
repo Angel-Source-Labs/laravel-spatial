@@ -16,16 +16,17 @@
         }
     ],
     "require": {
-        "php": ">=7.2.5",
+        "php": ">=7.3",
         "ext-pdo": "*",
         "ext-json": "*",
-        "angel-source-labs/laravel-expressions": "^1.1",
+        "angel-source-labs/laravel-expressions": "dev-test",
         "doctrine/dbal": "^2.6|^3.0",
         "geo-io/wkb-parser": "^1.0",
         "jmikola/geojson": "^1.0",
         "laravel/framework": ">=6.0"
     },
     "require-dev": {
+        "phpunit/phpunit": "^10.0",
         "mockery/mockery": "^1.4",
         "orchestra/testbench": "*",
         "composer/semver": "*"

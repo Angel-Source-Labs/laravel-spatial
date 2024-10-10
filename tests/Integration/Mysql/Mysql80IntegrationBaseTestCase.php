@@ -23,7 +23,7 @@ abstract class Mysql80IntegrationBaseTestCase extends IntegrationBaseTestCase
         $this->setExpectedSchemaBuilder(MySqlBuilder::class);
 
         $connectionString = "";
-        if (Semver::satisfies(app()->version(), "^10.0")) {
+        if (Semver::satisfies(app()->version(), ">=10.0")) {
             $connectionString = "Connection: mysql, ";
         }
         $this->setWrongSridExceptionMessage(

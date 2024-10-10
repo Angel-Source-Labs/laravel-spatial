@@ -22,7 +22,7 @@ class SpatialPostgisBaseTest extends IntegrationBaseTestCase
         $this->setExpectedSchemaBuilder(PostgresBuilder::class);
 
         $connectionString = "";
-        if (Semver::satisfies(app()->version(), "^10.0")) {
+        if (Semver::satisfies(app()->version(), ">=10.0")) {
             $connectionString = "Connection: pgsql, ";
         }
         $this->setWrongSridExceptionMessage(

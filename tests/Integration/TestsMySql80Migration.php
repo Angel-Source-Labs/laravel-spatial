@@ -6,6 +6,7 @@ use AngelSourceLabs\LaravelExpressions\Database\MySqlConnection;
 use AngelSourceLabs\LaravelExpressions\Database\PostgresConnection;
 use Doctrine\DBAL\Schema\Column;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 trait TestsMySql80Migration
 {
@@ -45,7 +46,13 @@ trait TestsMySql80Migration
         /**
          * @var Column $details
          */
-        $actualColumns = $connection->getDoctrineSchemaManager()->listTableColumns($table);
+//        if (method_exists($connection, 'getDoctrineSchemaManager')) {
+//            $actualColumns = $connection->getDoctrineSchemaManager()->listTableColumns($table);
+//        }
+//        else {
+//            $actualColumns = Schema::getColumns($table);
+//        }
+
 
 
         $result = DB::selectOne('SHOW CREATE TABLE with_srid');

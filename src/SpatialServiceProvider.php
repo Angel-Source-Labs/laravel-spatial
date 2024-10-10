@@ -20,7 +20,7 @@ use AngelSourceLabs\LaravelSpatial\Doctrine\Types\MultiPolygon;
 use AngelSourceLabs\LaravelSpatial\Doctrine\Types\Point;
 use AngelSourceLabs\LaravelSpatial\Doctrine\Types\Polygon;
 use Illuminate\Database\Connection;
-use Illuminate\Database\Schema\Grammars\PostgresGrammar;
+
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -99,6 +99,12 @@ class SpatialServiceProvider extends \Illuminate\Support\ServiceProvider
 
     }
 
+    protected function isDbal($connection)
+    {
+        static $isDbal = null;
+        return $isDbal ?? ($isDbal = method_exists($connection, 'getDoctrineSchemaManager'));
+    }
+
     protected function resolveSpatialSchemaGrammar()
     {
         $connections = [
@@ -106,7 +112,7 @@ class SpatialServiceProvider extends \Illuminate\Support\ServiceProvider
                 'schemaGrammar' => MySqlGrammar::class,
             ],
             'pgsql' => [
-                'schemaGrammar' => PostgresGrammar::class,
+                'schemaGrammar' => PostgisGrammar::class,
                 'schemaColumnDefinition' => PostgisSchemaColumnDefinitionEventSubscriber::class,
             ],
             'sqlite' => [
@@ -126,10 +132,12 @@ class SpatialServiceProvider extends \Illuminate\Support\ServiceProvider
                  */
                 $connection = $resolver($pdo, $database, $tablePrefix, $config);
                 $connection->setSchemaGrammar(new $class['schemaGrammar']);
-                try {
-                    $this->registerGeometryTypes($connection);
-                } catch (\Throwable $e) {
-                    Log::error("SpatialServiceProvider: $e");
+                if ($this->isDbal($connection)) {
+                    try {
+                        $this->registerGeometryTypes($connection);
+                    } catch (\Throwable $e) {
+                        Log::error("SpatialServiceProvider: $e");
+                    }
                 }
 
                 return $connection;

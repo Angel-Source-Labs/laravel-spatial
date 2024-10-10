@@ -6,6 +6,7 @@ use AngelSourceLabs\LaravelExpressions\ExpressionsServiceProvider;
 use AngelSourceLabs\LaravelSpatial\Schema\MySqlBuilder;
 use AngelSourceLabs\LaravelSpatial\SpatialServiceProvider;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Orchestra\Testbench\TestCase;
 
 abstract class IntegrationBaseTestCase extends TestCase
@@ -34,7 +35,11 @@ abstract class IntegrationBaseTestCase extends TestCase
 
         $this->after_fix = $this->isMySQL8AfterFix();
 
+        Schema::dropAllTables();
         $this->loadMigrationsFrom(__DIR__ . '/Migrations');
+//        $this->artisan('migrate:fresh', [
+//            '--realpath' => realpath(__DIR__ . '/Migrations'),
+//        ]);
 
 //        $this->onMigrations(function ($migrationClass) {
 //            (new $migrationClass())->up();
@@ -80,7 +85,7 @@ abstract class IntegrationBaseTestCase extends TestCase
         }
     }
 
-    protected function assertDatabaseHas($table, array $data, $connection = null)
+    protected function assertDatabaseHas($table, array $data = [], $connection = null)
     {
         if (method_exists($this, 'seeInDatabase')) {
             $this->seeInDatabase($table, $data, $connection);

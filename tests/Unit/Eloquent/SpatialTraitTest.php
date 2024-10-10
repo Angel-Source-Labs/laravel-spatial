@@ -37,6 +37,7 @@ class SpatialTraitTest extends BaseTestCase
     public function tearDown(): void
     {
         $this->model->getConnection()->getPdo()->resetQueries();
+        parent::tearDown();
     }
 
     public function testInsertUpdatePointHasCorrectSql()
@@ -57,6 +58,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertStringStartsWith('update', $this->pdo->queries[1]);
         $this->assertStringContainsString('update `test_models` set `point` = ST_GeomFromText(?, ?, \'axis-order=long-lat\') where `id` = ?', $this->pdo->queries[1]);
         // TODO: assert bindings in query
+
     }
 
     public function testInsertUpdateLineStringHasCorrectSql()
