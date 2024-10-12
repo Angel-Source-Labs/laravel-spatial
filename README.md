@@ -319,10 +319,7 @@ GeometryInterface <|.. Geometry
       GeometryCollection <|-- MultiLineString
         MultiLineString <|-- Polygon  
       GeometryCollection <|-- MultiPolygon
-
-
-
-
+@enduml
 ```
 
 ### Using Geometry classes
