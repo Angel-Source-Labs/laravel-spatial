@@ -285,6 +285,10 @@ $lng = $place2->location->getLng();	// -73.9878441
 | `MultiPolygon(Polygon[], $srid = 0)`                                                                                                   | [MultiPolygon](https://dev.mysql.com/doc/refman/8.0/en/gis-class-multipolygon.html) |
 | `GeometryCollection(Geometry[], $srid = 0)`                                                                                            | [GeometryCollection](https://dev.mysql.com/doc/refman/8.0/en/gis-class-geometrycollection.html) |
 
+![](ReadmeClassDiagram.svg)
+
+PlantUML Markup
+<details>
 
 ```plantuml
 @startuml ReadmeClassDiagram
@@ -323,7 +327,7 @@ GeometryInterface <|.. Geometry
 @enduml
 ```
 
-![](ReadmeClassDiagram.svg)
+</details>
 
 ### Using Geometry classes
 
