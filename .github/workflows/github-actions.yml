@@ -82,16 +82,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-      - uses: "ramsey/composer-install@v2"
+      - uses: "ramsey/composer-install@v3"
         with:
           dependency-versions: "highest"
           composer-options: "--with laravel/framework:${{ matrix.laravel }} --with doctrine/dbal:${{ matrix.dbal }}"
       - name: Create Database Containers
-        uses: nick-fields/retry@v2
+        uses: nick-fields/retry@v3
         with:
           max_attempts: 3
           retry_on: error
