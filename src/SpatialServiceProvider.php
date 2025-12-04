@@ -20,7 +20,7 @@ use AngelSourceLabs\LaravelSpatial\Doctrine\Types\MultiPolygon;
 use AngelSourceLabs\LaravelSpatial\Doctrine\Types\Point;
 use AngelSourceLabs\LaravelSpatial\Doctrine\Types\Polygon;
 use Illuminate\Database\Connection;
-
+use Composer\Semver\Semver;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -131,7 +131,16 @@ class SpatialServiceProvider extends \Illuminate\Support\ServiceProvider
                  * @var Connection | null $connection
                  */
                 $connection = $resolver($pdo, $database, $tablePrefix, $config);
-                $connection->setSchemaGrammar(new $class['schemaGrammar']);
+
+                // In Laravel versions 11 and below, Illuminate\Database\Grammar does not expect any arguments
+                // in the constructor. In Laravel 12, it does. We need to check the version and pass the arguments
+                // if the version is 12 or above.
+                if (Semver::satisfies(app()->version(), '<12.0')) {
+                    $connection->setSchemaGrammar(new $class['schemaGrammar']());
+                } else {
+                    $connection->setSchemaGrammar(new $class['schemaGrammar']($connection));
+                }
+
                 if ($this->isDbal($connection)) {
                     try {
                         $this->registerGeometryTypes($connection);
