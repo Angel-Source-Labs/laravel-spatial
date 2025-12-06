@@ -16,7 +16,7 @@ trait CreatesSpatialBlueprint
      *
      * @return SpatialBlueprint
      */
-    protected function createBlueprint($table, Closure $callback = null)
+    protected function createBlueprint($table, ?Closure $callback = null)
     {
         if (LaravelVersion::is12OrHigher()) {
             return new SpatialBlueprint($this->connection, $table, $callback);

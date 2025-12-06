@@ -162,7 +162,7 @@ abstract class Geometry implements GeometryInterface, Jsonable, \JsonSerializabl
         return [$this->toWKT(), $this->getSrid()];
     }
 
-    public function getValue(Grammar $grammar = null)
+    public function getValue(?Grammar $grammar = null)
     {
         return $this->grammar = $this->grammar ?? ExpressionGrammar::make()
                     ->mySql("ST_GeomFromText(?, ?)")

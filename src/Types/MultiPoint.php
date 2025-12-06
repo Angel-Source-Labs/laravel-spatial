@@ -69,6 +69,7 @@ class MultiPoint extends PointCollection
      *
      * @return \GeoJson\Geometry\MultiPoint
      */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         $points = [];

@@ -65,6 +65,7 @@ class LineString extends PointCollection
      *
      * @return \GeoJson\Geometry\LineString
      */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         $points = [];

@@ -15,6 +15,13 @@
             "name": "Brion Finlay"
         }
     ],
+    "config": {
+      "audit": {
+        "ignore": [
+          "PKSA-8qx3-n5y5-vvnd"
+        ]
+      }
+    },
     "require": {
         "php": ">=7.3",
         "ext-pdo": "*",
