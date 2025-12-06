@@ -3,6 +3,7 @@
 namespace AngelSourceLabs\LaravelSpatial\Schema\Grammars;
 
 use AngelSourceLabs\LaravelSpatial\Schema\SpatialBlueprint;
+use AngelSourceLabs\LaravelSpatial\Support\LaravelVersion;
 use Composer\Semver\Semver;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Schema\Blueprint;
@@ -55,10 +56,23 @@ class MySqlGrammar extends IlluminateMySqlGrammar
         return $this->isMySql80Platform;
     }
 
-    public function compileCreate(Blueprint $blueprint, Fluent $command, Connection $connection)
+    public function compileCreate(Blueprint $blueprint, Fluent $command, Connection $connection = null)
     {
-        $this->configureSridSupport($connection);
-        return parent::compileCreate($blueprint, $command, $connection);
+        // Your custom behavior can use:
+        // - $this->connection (grammar’s connection)
+        // - $connection (explicit, for Laravel 11 calls)
+
+        if (LaravelVersion::is12OrHigher()) {
+            // Laravel 12 parent only expects two args.
+            return parent::compileCreate($blueprint, $command);
+        }
+
+        // Laravel 11 parent expects the 3rd Connection parameter.
+        return parent::compileCreate(
+            $blueprint,
+            $command,
+            $connection ?? $this->connection
+        );
     }
 
     protected function addModifiers($sql, Blueprint $blueprint, Fluent $column)

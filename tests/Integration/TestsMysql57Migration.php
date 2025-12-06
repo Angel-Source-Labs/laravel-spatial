@@ -23,6 +23,17 @@ use Illuminate\Support\Facades\DB;
 trait TestsMysql57Migration
 {
     /**
+     * Normalize all line endings to \n to make string comparisons OS-independent.
+     *
+     * @param string $value
+     * @return string
+     */
+    private function normalizeLineEndings($value)
+    {
+        return str_replace(["\r\n", "\r"], "\n", $value);
+    }
+
+    /**
      * @environment-setup useMySql57Connection
      */
     public function test_mysql57_TableWasCreatedWithRightTypes()
@@ -46,6 +57,9 @@ trait TestsMysql57Migration
 ) ENGINE=' . (config('database.connections.mysql.myisam') ? 'MyISAM' : 'InnoDB') . ' DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci';
 
         $this->assertEquals('geometry_test', $result->Table);
-        $this->assertEquals($expected, $result->{'Create Table'});
+        $this->assertEquals(
+            $this->normalizeLineEndings($expected),
+            $this->normalizeLineEndings($result->{'Create Table'})
+        );
     }
 }

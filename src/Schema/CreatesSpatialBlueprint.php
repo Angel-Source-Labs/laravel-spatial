@@ -3,6 +3,7 @@
 
 namespace AngelSourceLabs\LaravelSpatial\Schema;
 
+use AngelSourceLabs\LaravelSpatial\Support\LaravelVersion;
 use Closure;
 
 trait CreatesSpatialBlueprint
@@ -15,8 +16,12 @@ trait CreatesSpatialBlueprint
      *
      * @return SpatialBlueprint
      */
-    protected function createBlueprint($table, Closure $callback = null)
+    protected function createBlueprint($table, ?Closure $callback = null)
     {
+        if (LaravelVersion::is12OrHigher()) {
+            return new SpatialBlueprint($this->connection, $table, $callback);
+        }
+
         return new SpatialBlueprint($table, $callback);
     }
 }
