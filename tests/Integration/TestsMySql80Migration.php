@@ -10,6 +10,17 @@ use Illuminate\Support\Facades\Schema;
 
 trait TestsMySql80Migration
 {
+    /**
+     * Normalize all line endings to \n to make string comparisons OS-independent.
+     *
+     * @param string $value
+     * @return string
+     */
+    private function normalizeLineEndings($value)
+    {
+        return str_replace(["\r\n", "\r"], "\n", $value);
+    }
+
     public function test_mysql_TableWasCreatedWithRightTypes()
     {
         $result = DB::selectOne('SHOW CREATE TABLE geometry_test');
@@ -31,7 +42,10 @@ trait TestsMySql80Migration
 ) ENGINE=' . (config('database.connections.mysql.myisam') ? 'MyISAM' : 'InnoDB') . ' DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci';
 
         $this->assertEquals('geometry_test', $result->Table);
-        $this->assertEquals($expected, $result->{'Create Table'});
+        $this->assertEquals(
+            $this->normalizeLineEndings($expected),
+            $this->normalizeLineEndings($result->{'Create Table'})
+        );
     }
 
     public function test_mysql_TableWasCreatedWithSrid()
@@ -71,7 +85,10 @@ trait TestsMySql80Migration
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci';
 
         $this->assertEquals('with_srid', $result->Table);
-        $this->assertEquals($expected, $result->{'Create Table'});
+        $this->assertEquals(
+            $this->normalizeLineEndings($expected),
+            $this->normalizeLineEndings($result->{'Create Table'})
+        );
     }
 
 }

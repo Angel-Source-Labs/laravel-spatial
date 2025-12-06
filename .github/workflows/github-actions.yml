@@ -26,9 +26,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ["7.3", "7.4", "8.0", "8.1", "8.2", "8.3"]
-        laravel: [^6.0, ^7.0, ^8.0, ^9.0, ^10.0, ^11.0, ^12.0]
-        dbal: [^2.6, ^3.0]
+#        php: ["7.3", "7.4", "8.0", "8.1", "8.2", "8.3", "8.4"]
+#        laravel: [^7.0, ^8.0, ^9.0, ^10.0, ^11.0, ^12.0]
+#        dbal: [^2.6, ^3.0]
+        php: ["8.4"]
+        laravel: [^12.0]
+        dbal: [^3.0]
         exclude:
           - php: 7.3
             laravel: ^9.0
@@ -76,6 +79,12 @@ jobs:
             laravel: ^6.0
           - php: 8.3
             laravel: ^7.0
+          - php: 8.4
+            laravel: ^7.0
+          - php: 8.4
+            laravel: ^8.0
+          - php: 8.4
+            laravel: ^9.0
           - laravel: ^5.8
             dbal: ^3.0
           - laravel: ^6.0
@@ -96,7 +105,28 @@ jobs:
       - uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
+          extensions: >
+            mbstring,
+            pdo_mysql,
+            pdo_pgsql,
+            pgsql,
+            sqlite,
+            sqlite3,
+            pdo_sqlite,
+            gmp  
+
+      - name: Composer install (act only)
+        if: ${{ env.ACT }}
+        run: |
+          composer --version
+          composer update \
+            --no-interaction --no-progress --prefer-dist --ansi \
+            --with laravel/framework:${{ matrix.laravel }} \
+            --with doctrine/dbal:${{ matrix.dbal }} \
+            --with-all-dependencies          
+
       - uses: "ramsey/composer-install@v3"
+        if: ${{ !env.ACT }}
         with:
           dependency-versions: "highest"
           composer-options: "--with laravel/framework:${{ matrix.laravel }} --with doctrine/dbal:${{ matrix.dbal }}"
@@ -109,6 +139,13 @@ jobs:
           command: pwd;docker compose up -d
       - name: List Database Containers
         run: docker compose ps
+
+      - name: Install MySQL client (for act)
+        if: ${{ env.ACT == 'true' }}
+        run: |
+          apt-get update
+          apt-get install -y default-mysql-client        
+
       - name: Wait for MySQL
         run: |
           while ! mysqladmin ping --host=127.0.0.1 --port=33067 --silent; do
