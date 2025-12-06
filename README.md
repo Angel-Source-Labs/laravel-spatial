@@ -8,12 +8,12 @@ Laravel package to easily work with GIS data types in PostGIS, MySQL 5.7, and My
 ## Supported Compatibiltiy
 ### Laravel
 This package is tested against the following Laravel versions:
-* Laravel 6.x
 * Laravel 7.x
 * Laravel 8.x
 * Laravel 9.x
 * Laravel 10.x
 * Laravel 11.x
+* Laravel 12.x
 
 ### Databases
 This package is tested against the following Databases
