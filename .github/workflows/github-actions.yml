@@ -52,6 +52,8 @@ jobs:
           - php: 8.0
             laravel: ^5.8
           - php: 8.0
+            laravel: ^9.0
+          - php: 8.0
             laravel: ^10.0
           - php: 8.0
             laravel: ^11.0

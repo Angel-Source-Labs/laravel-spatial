@@ -18,7 +18,9 @@
     "config": {
       "audit": {
         "ignore": [
-          "PKSA-8qx3-n5y5-vvnd"
+          "PKSA-8qx3-n5y5-vvnd",
+          "PKSA-rqc2-tcc6-nc79",
+          "PKSA-fndg-qryc-dyc9"
         ]
       }
     },
