@@ -191,6 +191,8 @@ trait SpatialTrait
             $geometry->toWkt(),
             $geometry->getSrid(),
         ]);
+
+        return $query;
     }
 
     public function scopeComparison($query, $geometryColumn, $geometry, $relationship)
