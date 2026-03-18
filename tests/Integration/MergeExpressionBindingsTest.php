@@ -11,12 +11,11 @@ class MergeExpressionBindingsTest extends IntegrationBaseTestCase
 {
     public function getEnvironmentSetUp($app)
     {
-        $this->useSQLiteConnection($app);
+        $this->usePostgresConnection($app);
     }
 
     public function setUp(): void
     {
-        $this->dbDriver = 'sqlite';
         parent::setUp();
         
         Schema::create('test_models', function (SpatialBlueprint $table) {
