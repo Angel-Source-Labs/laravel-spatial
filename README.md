@@ -78,14 +78,14 @@ These versions will continue to be supported by this package for as long as it i
 
 To install for Laravel 6.x, and 7.x:
 - Require this package directly by `composer require angel-source-labs/laravel-spatial`
-- Require the dbal package directly by `composer require doctrine/dbal:^2.6`
+- Require the dbal package directly by `composer require doctrine/dbal:^2.6|^3.0|^4.0`
 - Or add these packages in your composer.json and run `composer update`
 
   ```
   "require-dev": {
     ...
     "angel-source-labs/laravel-spatial": "^1.0",
-    "doctrine/dbal": "^2.6"
+    "doctrine/dbal": "^2.6|^3.0|^4.0"
     ...
   }
   ```
