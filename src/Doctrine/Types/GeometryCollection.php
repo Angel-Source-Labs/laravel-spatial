@@ -9,7 +9,7 @@ class GeometryCollection extends Type
 {
     const GEOMETRYCOLLECTION = 'geometrycollection';
 
-    public function getSQLDeclaration(array $column, AbstractPlatform $platform)
+    public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
     {
         return 'geometrycollection';
     }
