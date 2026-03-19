@@ -9,7 +9,7 @@ class MultiPoint extends Type
 {
     const MULTIPOINT = 'multipoint';
 
-    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
+    public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
     {
         return 'multipoint';
     }

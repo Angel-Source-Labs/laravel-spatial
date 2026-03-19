@@ -9,7 +9,7 @@ class Geometry extends Type
 {
     const GEOMETRY = 'geometry';
 
-    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
+    public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
     {
         return 'geometry';
     }
