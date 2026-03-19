@@ -21,17 +21,12 @@ class SpatialPostgisBaseTest extends IntegrationBaseTestCase
         $this->usePostgresConnection($app);
         $this->setExpectedSchemaBuilder(PostgresBuilder::class);
 
-        $connectionString = "";
-        if (Semver::satisfies(app()->version(), ">=10.0")) {
-            $connectionString = "Connection: pgsql, ";
-        }
         $this->setWrongSridExceptionMessage(
-            'SQLSTATE[22023]: Invalid parameter value: 7 ERROR:  Geometry ' .
-            'SRID (4326) does not match column SRID (3857) ('.
-            $connectionString.
+            '/SQLSTATE\[22023\]: Invalid parameter value: 7 ERROR:  Geometry ' .
+            'SRID \(4326\) does not match column SRID \(3857\) \(.*'.
             'SQL: insert into ' .
-            '"with_srid" ("location") values (ST_GeomFromText(POINT(2 1), 4326)) ' .
-            'returning "id")'
+            '"with_srid" \("location"\) values \(ST_GeomFromText\(POINT\(2 1\), 4326\)\) ' .
+            'returning "id"\)/'
         );
     }
 }

@@ -99,7 +99,11 @@ abstract class IntegrationBaseTestCase extends TestCase
         if (method_exists(parent::class, 'expectException')) {
             parent::expectException($exceptionName);
             if (!is_null($exceptionMessage)) {
-                $this->expectExceptionMessage($exceptionMessage);
+                if (strpos($exceptionMessage, '/') === 0 && strrpos($exceptionMessage, '/') === strlen($exceptionMessage) - 1) {
+                    $this->expectExceptionMessageMatches($exceptionMessage);
+                } else {
+                    $this->expectExceptionMessage($exceptionMessage);
+                }
             }
         } else {
             $this->setExpectedException($exceptionName, $exceptionMessage);
