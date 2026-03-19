@@ -43,17 +43,12 @@ class MergeExpressionBindingsTest extends IntegrationBaseTestCase
         ]);
     }
     
-    public function test_it_reproduces_type_error_on_where_raw_with_string_bindings()
+    public function test_it_can_handle_string_bindings_on_where_raw()
     {
         // Explicitly passing a string as bindings to whereRaw
-        // PHP 8.3 should throw TypeError because mergeExpressionBindings(..., array $bindings)
-        try {
-            \Illuminate\Support\Facades\DB::table('test_models')->whereRaw('1 = 1', 'invalid-bindings');
-        } catch (\TypeError $e) {
-            $this->assertStringContainsString('must be of type array, string given', $e->getMessage());
-            return;
-        }
+        // This should no longer throw TypeError because mergeExpressionBindings now allows strings
+        $query = \Illuminate\Support\Facades\DB::table('test_models')->whereRaw('1 = 1', 'string-bindings');
         
-        $this->fail('TypeError was not thrown despite passing string as bindings to whereRaw');
+        $this->assertNotNull($query);
     }
 }
